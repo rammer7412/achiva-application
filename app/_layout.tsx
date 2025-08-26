@@ -2,10 +2,10 @@
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-SplashScreen.preventAutoHideAsync().catch(() => { /* already prevented */ });
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [fontsLoaded, fontsError] = useFonts({
@@ -16,7 +16,6 @@ export default function RootLayout() {
     'Pretendard-ExtraBold': require('@/assets/fonts/Pretendard-ExtraBold.otf'),
   });
 
-  const [hydrated, setHydrated] = useState(false);
 
   // useEffect(() => {
   //   (async () => {
@@ -53,20 +52,20 @@ export default function RootLayout() {
   // }, []);
 
   useEffect(() => {
-    if ((fontsLoaded || fontsError) && hydrated) {
+    if ((fontsLoaded || fontsError)) {
       SplashScreen.hideAsync().catch(() => {});
     }
-  }, [fontsLoaded, fontsError, hydrated]);
+  }, [fontsLoaded, fontsError]);
 
-  if ((!fontsLoaded && !fontsError) || !hydrated) return null;
+  if ((!fontsLoaded && !fontsError)) return null;
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" options={{ animation: 'fade' }} />
         <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="login" options={{ animation: 'fade' }} />
-        <Stack.Screen name="signup" options={{ animation: 'fade' }} />
+        <Stack.Screen name="login" options={{animation: 'slide_from_bottom'}}/>
+        <Stack.Screen name="signup"/>
       </Stack>
     </GestureHandlerRootView>
   );

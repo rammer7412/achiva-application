@@ -1,4 +1,7 @@
 // api/auth.ts
+import type { ApiBaseResponse } from '@/types/ApiTypes';
+import { LoginRequest, LoginUser } from '@/types/ApiTypes';
+import { api } from '@/utils/apiClients';
 import { httpPost } from '@/utils/http';
 
 export async function verifyEmailCode(params: { email: string; code: string }) {
@@ -6,10 +9,12 @@ export async function verifyEmailCode(params: { email: string; code: string }) {
   return await httpPost<null>('/api/auth/verify-code', {}, { params });
 }
 
-// (예시) 로그인
-export async function login(body: { email: string; password: string }) {
-  return await httpPost<{ accessToken: string; refreshToken?: string }>(
+export async function login(body: LoginRequest) {
+  const res = await api.post<ApiBaseResponse<LoginUser>>(
     '/api/auth/login',
-    body
+    body,
+    { headers: { 'Content-Type': 'application/json' } }
   );
+
+  return res.data;
 }

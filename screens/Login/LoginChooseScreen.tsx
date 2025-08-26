@@ -1,7 +1,7 @@
 import SignupButton from '@/components/buttons/SignupButton';
 import ACHIVALogo from '@/components/logo/ACHIVA-logo';
 import ScreenContainer from '@/components/ScreenContainer';
-import SubtitleText from '@/components/text/subtitle-text';
+import SubtitleText from '@/components/text/SubtitleText';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import { useRouter } from 'expo-router';
 import React from 'react';
@@ -52,7 +52,7 @@ export default function LoginChooseScreen() {
           /> */}
           <SignupButton
             text="회원가입"
-            onPress={() => router.push('/signup')}
+            onPress={() => router.push('/')}
           />
         </View>
 
@@ -75,7 +75,7 @@ export default function LoginChooseScreen() {
             이미 계정이 있나요?{' '}
           </Text>
 
-          <Pressable onPress={() => router.push('/')}>
+          <Pressable onPress={() => router.push('/login')}>
             {({ pressed }) => (
               <Text
                 style={[
