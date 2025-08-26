@@ -75,7 +75,7 @@ export default function LoginChooseScreen() {
             이미 계정이 있나요?{' '}
           </Text>
 
-          <Pressable onPress={() => router.push('/login')}>
+          <Pressable onPress={() => router.push('/')}>
             {({ pressed }) => (
               <Text
                 style={[
