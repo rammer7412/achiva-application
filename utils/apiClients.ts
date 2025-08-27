@@ -2,7 +2,7 @@ import { useAuthStore } from '@/stores/useAuthStore'; // zustand 스토어
 import { logoutAndRedirect } from '@/utils/logout'; // 401 처리시 로그아웃 유틸
 import axios, { AxiosError } from 'axios';
 
-const BASE_URL = 'https://api.achiva.kr'
+export const BASE_URL = 'https://api.achiva.kr'
 
 export const api = axios.create({
   baseURL: BASE_URL,
@@ -22,7 +22,7 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// ✅ 응답 인터셉터: 토큰 만료(401 등) 시 로그아웃 & 로그인 페이지로 이동
+// 응답 인터셉터: 토큰 만료(401 등) 시 로그아웃 & 로그인 페이지로 이동
 api.interceptors.response.use(
   (res) => res,
   async (err: AxiosError<any>) => {
@@ -32,3 +32,5 @@ api.interceptors.response.use(
     return Promise.reject(err);
   }
 );
+
+export default api

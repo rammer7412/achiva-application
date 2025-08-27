@@ -1,4 +1,5 @@
 import { login } from '@/api/auth';
+import { getMe } from '@/api/users';
 import ConfirmButton from '@/components/buttons/ConfirmButton';
 import TitleWithBack from '@/components/header/TitleWithBack';
 import PasswordInput from '@/components/inputbox/PasswordInput';
@@ -21,6 +22,12 @@ export default function LoginScreen() {
   const router = useRouter();
   const { scaleHeight, scaleWidth, scaleFont } = useResponsiveSize();
 
+  const stripBearer = (raw?: string | null) => {
+    if (!raw) return null;
+    const m = String(raw).match(/Bearer\s+(.+)/i);
+    return m ? m[1] : String(raw);
+  };
+
   const handleLogin = async () => {
     const emailTrim = email.trim();
     const passwordTrim = password.trim();
@@ -34,33 +41,53 @@ export default function LoginScreen() {
       setLoading(true);
       setShowInlineError(false);
 
-      // 1) 로그인 (쿠키 수신)
-      const result = await login({ email: emailTrim, password: passwordTrim });
+      const loginRes = await login(
+        { email: emailTrim, password: passwordTrim },
+        { headers: { 'Content-Type': 'application/json' }}
+      );
 
       if (__DEV__) {
-        console.log('🟢 [Login] result =', result);
+        console.log('🟢 [Login] result =', loginRes);
       }
 
-      if (result?.code !== 200) {
-        // 서버가 실패 코드를 줄 경우 인라인 에러
+      if (loginRes?.data.code !== 200) {
         setShowInlineError(true);
         return;
       }
 
+      const authHeader =
+        (loginRes.headers as any)?.get?.('authorization') ??
+        loginRes.headers['Authorization'];
+        
+      const accessToken = stripBearer(authHeader);
+      console.log(accessToken);
       // 2) 응답의 data에 유저가 있으면 1차 반영
       const { setUser } = useAuthStore.getState();
-      if (result?.data) {
+      const meRes = await getMe();
+
+      
+      if (__DEV__) {
+        console.log('🟢 [Me] result =', meRes);
+      }
+
+      if (meRes?.status === 'success' && meRes.data) {
+        const meResData = meRes.data;
         setUser({
-          id: result.data.id,
-          email: result.data.email,
-          nickName: result.data.nickname,     // 스토어 필드명이 nickName이면 매핑
-          profileImageUrl: result.data.profileImageUrl,
-          birth: result.data.birth,
+          id: meResData.id,
+          email: meResData.email,
+          nickName: meResData.nickName, 
+          birth: meResData.birth,
+          gender: meResData.gender,
+          region: meResData.region,
+          categories: meResData.categories ?? [],
+          profileImageUrl: meResData.profileImageUrl,
+          description: meResData.description,
+          role: meResData.role,
+          createdAt: meResData.createdAt,
         } as any);
       }
 
-      // 3) 이동
-      router.replace('/');
+      router.replace('/'); //TODO - home 화면으로
     } catch (err: any) {
       if (__DEV__) console.log('❌ 로그인 오류:', err?.response?.data || err?.message || err);
       setShowInlineError(true);

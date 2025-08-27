@@ -1,4 +1,3 @@
-// utils/secureToken.ts
 import * as SecureStore from 'expo-secure-store';
 
 const ACCESS_KEY = 'achiva_access_token';
