@@ -1,8 +1,9 @@
 import { SmallButton } from '@/components/buttons/DefaultButton';
 import { ScrollContainer } from '@/components/containers/ScreenContainer';
-import { CategoriesArea } from '@/components/screen/profile/categoriesArea';
-import { PointArea } from '@/components/screen/profile/pointArea';
-import { ProfileBox, ProfileHeader } from '@/components/screen/profile/profileArea';
+import { ArticleArea } from '@/components/screen/profile/ArticleArea';
+import { CategoriesArea } from '@/components/screen/profile/CategoriesArea';
+import { PointArea } from '@/components/screen/profile/PointArea';
+import { ProfileBox, ProfileHeader } from '@/components/screen/profile/ProfileArea';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import React from 'react';
 import { View } from 'react-native';
@@ -28,6 +29,8 @@ export default function HomeScreen() {
       <CategoriesArea/>
 
       <PointArea/>
+
+      <ArticleArea/>
 
     </ScrollContainer>
   );

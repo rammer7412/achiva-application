@@ -1,4 +1,3 @@
-// components/ProfileBox.tsx
 import CategoryChip from '@/components/chips/CategoryChip';
 import { PaddingContainer } from '@/components/containers/ScreenContainer';
 import { useAuthStore } from '@/stores/useAuthStore';
