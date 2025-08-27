@@ -46,10 +46,6 @@ export default function LoginScreen() {
         { headers: { 'Content-Type': 'application/json' }}
       );
 
-      if (__DEV__) {
-        console.log('🟢 [Login] result =', loginRes);
-      }
-
       if (loginRes?.data.code !== 200) {
         setShowInlineError(true);
         return;
@@ -60,15 +56,11 @@ export default function LoginScreen() {
         loginRes.headers['Authorization'];
         
       const accessToken = stripBearer(authHeader);
-      console.log(accessToken);
-      // 2) 응답의 data에 유저가 있으면 1차 반영
+      const {setTokens} = useAuthStore.getState();
+      setTokens(accessToken);
+
       const { setUser } = useAuthStore.getState();
       const meRes = await getMe();
-
-      
-      if (__DEV__) {
-        console.log('🟢 [Me] result =', meRes);
-      }
 
       if (meRes?.status === 'success' && meRes.data) {
         const meResData = meRes.data;
@@ -84,9 +76,9 @@ export default function LoginScreen() {
           description: meResData.description,
           role: meResData.role,
           createdAt: meResData.createdAt,
-        } as any);
+        });
       }
-
+      
       router.replace('/'); //TODO - home 화면으로
     } catch (err: any) {
       if (__DEV__) console.log('❌ 로그인 오류:', err?.response?.data || err?.message || err);
