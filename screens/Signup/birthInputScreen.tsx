@@ -1,6 +1,6 @@
 import ConfirmButton from '@/components/buttons/ConfirmButton';
-import HeaderWithBack from '@/components/HeaderWithBack';
-import ScreenContainer from '@/components/ScreenContainer';
+import { ScreenContainer } from '@/components/containers/ScreenContainer';
+import HeaderWithBack from '@/components/header/HeaderWithBack';
 import NoticeMessageTitle from '@/components/text/NoticeMessageTitle';
 import { useUserSignupStore } from '@/stores/useUserSignupStore';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
@@ -33,7 +33,7 @@ export default function BirthInputScreen() {
       .toString()
       .padStart(2, '0')}`;
     setBirth(birthStr);
-    router.push('/usernameinput');
+    router.push('/signup/usernameinput');
   };
 
   return (

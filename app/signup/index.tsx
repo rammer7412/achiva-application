@@ -1,2 +1,2 @@
-import Screen from '@/screens/Login/loginChooseScreen';
+import Screen from '@/screens/Signup/BeginScreen';
 export default Screen;

@@ -5,7 +5,7 @@ import NoticeMessageTitle from '@/components/text/NoticeMessageTitle';
 import { useUserSignupStore } from '@/stores/useUserSignupStore';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 
-import { BASE_URL } from '@/utils/authApi';
+import { BASE_URL } from '@/utils/apiClients';
 import axios from 'axios';
 import { Asset } from 'expo-asset';
 import * as ImagePicker from 'expo-image-picker';
@@ -150,7 +150,7 @@ export default function ProfileChooseScreen() {
         await uploadDefaultImage();
       }
 
-      router.push('/categorychoose');
+      router.push('/signup/categorychoose');
     } catch (e: any) {
       console.error('❌ 다음 단계 이동 실패:', e?.message || e);
       Alert.alert('오류', '다음 단계로 이동 중 문제가 발생했습니다.');

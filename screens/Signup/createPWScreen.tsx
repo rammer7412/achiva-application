@@ -36,7 +36,7 @@ export default function CreatePWScreen() {
 
     setPasswordToStore(password);
     setConfirmPasswordToStore(confirmPassword);
-    router.push('/accountagree');
+    router.push('/signup/accountagree');
   };
 
   return (

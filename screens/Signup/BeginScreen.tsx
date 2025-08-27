@@ -1,23 +1,21 @@
 import ConfirmButton from '@/components/buttons/ConfirmButton';
-import HeaderWithBack from '@/components/HeaderWithBack';
-import LabeledInput from '@/components/InputBox/LabeledInput';
-import ScreenContainer from '@/components/ScreenContainer';
+import { ScreenContainer } from '@/components/containers/ScreenContainer';
+import HeaderWithBack from '@/components/header/HeaderWithBack';
+import LabeledInput from '@/components/inputbox/LabeledInput';
 import NoticeMessageTitle from '@/components/text/NoticeMessageTitle';
 import { useUserSignupStore } from '@/stores/useUserSignupStore';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
-import { useKeyboardAnimatedButton } from '@/utils/useKeyboardAnimatedButton';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
   Alert,
-  Animated,
   ScrollView,
   StyleSheet,
-  View,
+  View
 } from 'react-native';
 
-export default function SignupScreen() {
+export default function BeginScreen() {
   const router = useRouter();
   const { scaleHeight, scaleWidth } = useResponsiveSize();
   const [userEmail, setUserEmail] = useState('');
@@ -25,8 +23,6 @@ export default function SignupScreen() {
   const [errorMessage, setErrorMessage] = useState('');
   const [submitting, setSubmitting] = useState(false); // ★ 중복 클릭 방지
   const { setEmail } = useUserSignupStore();
-
-  const buttonBottom = useKeyboardAnimatedButton(scaleHeight(120));
 
   const isValidEmail = (email: string): boolean => {
     const regex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
@@ -124,7 +120,7 @@ export default function SignupScreen() {
 
       await sendVerificationCode(trimmedEmail);
       setEmail(trimmedEmail);
-      router.push('/emailauth');
+      router.push('/signup/emailauth');
     } catch (error) {
       Alert.alert('오류', '이메일 인증 요청 중 문제가 발생했습니다.');
     } finally {
@@ -147,7 +143,7 @@ export default function SignupScreen() {
         <HeaderWithBack total={6} current={1} />
         <NoticeMessageTitle message="이메일 주소를 알려주세요." />
 
-        <View style={{ marginTop: scaleHeight(20) }}>
+        <View style={{ marginTop: scaleHeight(20), marginBottom: scaleHeight(24) }}>
           <LabeledInput
             value={userEmail}
             onChangeText={handleEmailChange}
@@ -156,24 +152,15 @@ export default function SignupScreen() {
             errorMessage={errorMessage}
           />
         </View>
-      </ScrollView>
 
-      <Animated.View
-        style={[
-          styles.buttonWrapper,
-          {
-            left: scaleWidth(24),
-            right: scaleWidth(24),
-            bottom: buttonBottom,
-          },
-        ]}
-      >
         <ConfirmButton
           text={submitting ? '요청 중...' : '다음'}          // ★ 로딩 문구
           onPress={handlePress}
           disabled={submitting || userEmail.trim() === ''} // ★ 비활성화
         />
-      </Animated.View>
+      </ScrollView>
+
+        
     </ScreenContainer>
   );
 }

@@ -52,7 +52,7 @@ export default function LoginChooseScreen() {
           /> */}
           <SignupButton
             text="회원가입"
-            onPress={() => router.push('/')}
+            onPress={() => router.push('/signup')}
           />
         </View>
 

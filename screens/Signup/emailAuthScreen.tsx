@@ -40,7 +40,7 @@ export default function EmailAuthScreen() {
       }
     );
 
-    router.push('/createpw');
+    router.push('/signup/createpw');
   } catch (error: any) {
     const response = error.response?.data;
 

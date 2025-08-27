@@ -1,7 +1,7 @@
 import ConfirmButton from '@/components/buttons/ConfirmButton';
+import { ScreenContainer } from '@/components/containers/ScreenContainer';
 import HeaderWithBack from '@/components/header/HeaderWithBack';
-import LabeledInput from '@/components/InputBox/LabeledInput';
-import ScreenContainer from '@/components/ScreenContainer';
+import LabeledInput from '@/components/inputbox/LabeledInput';
 import NoticeMessageTitle from '@/components/text/NoticeMessageTitle';
 import { useUserSignupStore } from '@/stores/useUserSignupStore';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
@@ -86,7 +86,7 @@ export default function UsernameInputScreen() {
 
   const handlePress = () => {
     if (isValidLength && isNicknameChecked) {
-      router.push('/profilechoose');
+      router.push('/signup/profilechoose');
     }
   };
 

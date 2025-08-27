@@ -1,8 +1,8 @@
 // screens/AccountAgreeScreen.tsx
-import AgreementItem from '@/components/AgreementItem';
-import HeaderWithBack from '@/components/HeaderWithBack';
-import ScreenContainer from '@/components/ScreenContainer';
 import ConfirmButton from '@/components/buttons/ConfirmButton';
+import AgreementItem from '@/components/checkbox/AgreementItem';
+import { ScreenContainer } from '@/components/containers/ScreenContainer';
+import HeaderWithBack from '@/components/header/HeaderWithBack';
 import NoticeMessageTitle from '@/components/text/NoticeMessageTitle';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import { Feather } from '@expo/vector-icons';
@@ -62,7 +62,7 @@ export default function AccountAgreeScreen() {
   // 다음 이동
   const handleNext = () => {
     if (agreeService && agreePrivacy && agreeCommunity && agreeConsign) {
-      router.push('/birthinput');
+      router.push('/signup/birthinput');
     } else {
       Alert.alert('필수 약관에 동의해주세요.');
     }

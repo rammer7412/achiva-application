@@ -32,7 +32,7 @@ export function ProfileBox({ button }: ProfileBoxProps) {
   const desc = user?.description ?? '나를 소개하는 한 줄을 적었을 때';
   const imgUrl = user?.profileImageUrl ?? null;
 
-  const AVATAR_SIZE = 125;
+  const AVATAR_SIZE = 96;
   const profileSize = scaleWidth(AVATAR_SIZE);
 
   return (
@@ -84,7 +84,7 @@ export function ProfileBox({ button }: ProfileBoxProps) {
           )}
           
           {button ? (
-            <View style={{ marginTop: scaleHeight(12), alignSelf: 'flex-start' }}>
+            <View style={{ marginTop: scaleHeight(16), alignSelf: 'flex-start' }}>
               {button}
             </View>
           ) : null}

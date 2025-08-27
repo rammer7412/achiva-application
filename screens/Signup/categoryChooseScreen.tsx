@@ -33,7 +33,7 @@ export default function CategoryChooseScreen() {
 
   const handleNext = () => {
     if (selected.length > 0) {
-      router.push('/pledge');
+      router.push('/signup/pledge');
     }
   };
 
@@ -93,8 +93,8 @@ export default function CategoryChooseScreen() {
 
         <View
           style={{
-            marginTop: 'auto',
-            marginBottom: scaleHeight(40),
+            marginTop: scaleHeight(420),
+            marginBottom: scaleHeight(24),
           }}
         >
           <ConfirmButton
