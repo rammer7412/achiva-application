@@ -1,12 +1,12 @@
 import { login } from '@/api/auth';
 import { getMe } from '@/api/users';
 import ConfirmButton from '@/components/buttons/ConfirmButton';
+import { ScreenContainer } from '@/components/containers/ScreenContainer';
 import TitleWithBack from '@/components/header/TitleWithBack';
 import PasswordInput from '@/components/inputbox/PasswordInput';
 import SimpleInput from '@/components/inputbox/SimpleInput';
 import ACHIVALogo from '@/components/logo/ACHIVA-logo';
-import ScreenContainer from '@/components/ScreenContainer';
-import { ThinText } from '@/components/text/DefaultText';
+import { ThinText } from '@/components/text/TextWithNode';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import { Ionicons } from '@expo/vector-icons';
@@ -79,7 +79,7 @@ export default function LoginScreen() {
         });
       }
       
-      router.replace('/'); //TODO - home 화면으로
+      router.replace('/(tab)/home');
     } catch (err: any) {
       if (__DEV__) console.log('❌ 로그인 오류:', err?.response?.data || err?.message || err);
       setShowInlineError(true);

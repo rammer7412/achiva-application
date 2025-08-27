@@ -1,6 +1,6 @@
 import SignupButton from '@/components/buttons/SignupButton';
+import { ScreenContainer } from '@/components/containers/ScreenContainer';
 import ACHIVALogo from '@/components/logo/ACHIVA-logo';
-import ScreenContainer from '@/components/ScreenContainer';
 import SubtitleText from '@/components/text/SubtitleText';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import { useRouter } from 'expo-router';

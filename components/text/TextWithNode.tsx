@@ -17,6 +17,16 @@ export function ThinText({ children, style }: Props) {
   );
 }
 
+export function VariableText({ children, style }: Props) {
+  const { scaleFont } = useResponsiveSize();
+
+  return (
+    <Text style={[styles.text, { fontSize: scaleFont(16), fontFamily: 'Pretendard-Variable' }, style]}>
+      {children}
+    </Text>
+  );
+}
+
 const styles = StyleSheet.create({
   text: {
     color: '#555',
