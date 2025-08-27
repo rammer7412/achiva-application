@@ -17,7 +17,7 @@ export function ProfileHeader() {
   const { scaleWidth} = useResponsiveSize();
   return (
     <PaddingContainer>
-      <View style={{ backgroundColor: 'red',marginTop: scaleWidth(10), width: '100%', flexDirection: 'row', justifyContent: 'flex-end' }}>
+      <View style={{marginTop: scaleWidth(10), width: '100%', flexDirection: 'row', justifyContent: 'flex-end' }}>
         <GearSixIcon focused={false} />
       </View>
     </PaddingContainer>

@@ -1,73 +1,84 @@
-import { myArticles } from '@/api/article';
+import { useMyArticles } from '@/api/useMyArticles';
 import { PaddingContainer } from '@/components/containers/ScreenContainer';
-import { Article, SortOption } from '@/types/ApiTypes';
+import type { Article, SortOption } from '@/types/ApiTypes';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
-import React, { useCallback, useMemo, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
-import ArticleGrid from './ArticleGrid';
+import React, { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from 'react';
+import { ActivityIndicator, Image, NativeScrollEvent, NativeSyntheticEvent, TouchableOpacity, View } from 'react-native';
 import ArticleHeader from './ArticleHeader';
+
+export type ArticleAreaHandle = {
+  onParentScroll: (e: NativeSyntheticEvent<NativeScrollEvent>) => void;
+  refresh: () => Promise<void>;
+};
 
 type Props = {
   onPressItem?: (item: Article) => void;
 };
 
-export function ArticleArea({ onPressItem }: Props) {
-  const { scaleHeight } = useResponsiveSize();
+const ArticleArea = forwardRef<ArticleAreaHandle, Props>(function ArticleArea({ onPressItem }, ref) {
+  const { smartScale, scaleHeight } = useResponsiveSize();
+  const gap = smartScale(6, 10);
 
   const [sort, setSort] = useState<SortOption>('createdAt,DESC');
-  const [page, setPage] = useState(0);
-  const [items, setItems] = useState<Article[]>([]);
-  const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [isLast, setIsLast] = useState(false);
+  const { items, total, loadingFirst, loadingMore, isLast, loadMore, refresh } = useMyArticles(sort);
 
-  const loadPage = useCallback(
-    async (p: number, s: SortOption) => {
-      if (loading) return;
-      setLoading(true);
-      try {
-        const res = await myArticles({ page: p, size: 12, sort: s });
-        setItems((prev) => (p === 0 ? res.content : [...prev, ...res.content]));
-        setTotal(res.totalElements ?? res.numberOfElements ?? 0);
-        setIsLast(res.last);
-        setPage(res.number);
-      } finally {
-        setLoading(false);
-      }
+  // 스크롤 끝 근처 판정
+  const isCloseToBottom = useCallback((e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const { layoutMeasurement, contentOffset, contentSize } = e.nativeEvent;
+    return layoutMeasurement.height + contentOffset.y >= contentSize.height - 200; // 200px 여유
+  }, []);
+
+  // 부모 ScrollView의 onScroll을 ArticleArea가 처리할 수 있도록 외부에 메서드 노출
+  useImperativeHandle(ref, () => ({
+    onParentScroll: (e) => {
+      if (isCloseToBottom(e) && !loadingMore && !isLast) loadMore();
     },
-    [loading],
-  );
+    refresh,
+  }), [isCloseToBottom, loadingMore, isLast, loadMore, refresh]);
 
-  // 최초/정렬 변경 시 로드
-  React.useEffect(() => {
-    loadPage(0, sort);
-  }, [sort]);
-
-  const onEndReached = useCallback(() => {
-    if (!loading && !isLast) loadPage(page + 1, sort);
-  }, [loading, isLast, page, sort, loadPage]);
-
-  const header = useMemo(
-    () => <ArticleHeader total={total} sort={sort} onChangeSort={setSort} />,
-    [total, sort],
-  );
+  const Skeleton = useMemo(() => (
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -gap / 2 }}>
+      {Array.from({ length: 12 }).map((_, i) => (
+        <View key={i} style={{ width: '33.3333%', paddingHorizontal: gap / 2, marginBottom: gap }}>
+          <View style={{ aspectRatio: 1, borderRadius: 10, backgroundColor: '#3a3a3a' }} />
+        </View>
+      ))}
+    </View>
+  ), [gap]);
 
   return (
-    <PaddingContainer>
-      <View style={{ gap: scaleHeight(12) }}>
-        {header}
-        <ArticleGrid
-          items={items}
-          loading={loading && items.length === 0}
-          onPressItem={onPressItem}
-          onEndReached={onEndReached}
-        />
-        {loading && items.length > 0 ? (
-          <ActivityIndicator style={{ marginTop: scaleHeight(12) }} />
-        ) : null}
-      </View>
-    </PaddingContainer>
+    <View style={{ gap: scaleHeight(12) }}>
+      <PaddingContainer>
+        <ArticleHeader total={total} sort={sort} onChangeSort={setSort} />
+      </PaddingContainer>
+
+      {/* 수동 그리드 */}
+      {loadingFirst && items.length === 0 ? (
+        Skeleton
+      ) : (
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -gap / 2 }}>
+          {items.map((item) => (
+            <TouchableOpacity
+              key={item.id}
+              activeOpacity={0.9}
+              onPress={() => onPressItem?.(item)}
+              style={{ width: '33.3333%', paddingHorizontal: gap / 2, marginBottom: gap }}
+            >
+              <View style={{ aspectRatio: 1, borderRadius: 10, overflow: 'hidden', backgroundColor: '#333' }}>
+                {!!item.photoUrl && (
+                  <Image source={{ uri: item.photoUrl }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+                )}
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+
+      {loadingMore && (
+        <ActivityIndicator style={{ marginTop: scaleHeight(12), marginBottom: scaleHeight(8) }} />
+      )}
+    </View>
   );
-}
+});
 
 export default ArticleArea;

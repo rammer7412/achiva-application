@@ -1,10 +1,19 @@
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import React, { ReactNode } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Props = {
   children: ReactNode;
+};
+
+type ScrollContainerProps = {
+  children: ReactNode;
+  onScroll?: (e: any) => void;
+  scrollEventThrottle?: number;
+  refreshing?: boolean;
+  onRefresh?: () => void;
+  contentContainerStyle?: ViewStyle;
 };
 
 export function ScreenContainer({ children }: Props) {
@@ -19,7 +28,7 @@ export function ScreenContainer({ children }: Props) {
   );
 }
 
-export function ScrollContainer({ children }: Props) {
+export function ScrollContainer({ children }: ScrollContainerProps) {
   return (
     <SafeAreaView
       style={styles.safeareaContainer}
@@ -31,8 +40,7 @@ export function ScrollContainer({ children }: Props) {
       >
         {children}
       </ScrollView>
-    </SafeAreaView>
-    
+    </SafeAreaView>    
   );
 }
 
