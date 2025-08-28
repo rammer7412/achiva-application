@@ -1,9 +1,9 @@
 import { PaddingContainer } from '@/components/containers/ScreenContainer';
+import SupportHistorySheetContainer from '@/components/containers/SupportHistorySheetContainer';
 import { BronzeBadge, SilverBadge } from '@/components/icons/Badge';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import React from 'react';
 import { Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
-import SupportHistorySheet from './SupportHistorySheet';
 
 type Tone = 'silver' | 'bronze';
 
@@ -102,23 +102,6 @@ export function PointArea() {
   const GAP = scaleWidth(14);
   const CARD_HEIGHT = scaleHeight(185);
 
-  // (예시) 두 케이스 분리 데이터 — 추후 API 연결
-  const receivedTotal = 90;
-  const receivedStats = [
-    { label: '최고예요 👍', points: 30 },
-    { label: '응원해요 🔥', points: 20 },
-    { label: '수고했어요 💕', points: 20 },
-    { label: '동기부여 🍀', points: 20 },
-  ];
-
-  const sentTotal = 42;
-  const sentStats = [
-    { label: '최고예요 👍', points: 12 },
-    { label: '응원해요 🔥', points: 10 },
-    { label: '수고했어요 💕', points: 10 },
-    { label: '동기부여 🍀', points: 10 },
-  ];
-
   return (
     <PaddingContainer>
       <View style={[styles.row, { gap: GAP, marginBottom: scaleHeight(24) }]}>
@@ -140,13 +123,11 @@ export function PointArea() {
         </View>
       </View>
 
-      <SupportHistorySheet
+      <SupportHistorySheetContainer
         visible={!!sheetOpen}
         onClose={() => setSheetOpen(false)}
         userName="Achiva_123"
-        variant={sheetOpen === 'sent' ? 'sent' : 'received'}                // ⬅️ 분기
-        totalPoints={sheetOpen === 'sent' ? sentTotal : receivedTotal}      // ⬅️ 분기
-        buttonStats={sheetOpen === 'sent' ? sentStats : receivedStats}      // ⬅️ 분기
+        variant={sheetOpen === 'sent' ? 'sent' : 'received'}
       />
     </PaddingContainer>
   );

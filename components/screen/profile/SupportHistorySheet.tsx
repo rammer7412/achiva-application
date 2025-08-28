@@ -14,8 +14,8 @@ type Props = {
   visible: boolean;
   onClose: () => void;
   userName: string;
-  totalPoints?: number;         // API 연결 예정
-  buttonStats?: ButtonStat[];   // API 연결 예정
+  totalPoints?: number;
+  buttonStats?: ButtonStat[];
   variant: Variant; 
 };
 

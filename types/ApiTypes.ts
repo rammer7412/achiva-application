@@ -1,6 +1,8 @@
 import type { Cheering } from "./Response";
 
 export type SortOption = 'createdAt,DESC' | 'createdAt,ASC';
+export type Variant = 'received' | 'sent';
+export type CategoryKey = 'BEST' | 'CHEER' | 'GOOD_JOB' | 'MOTIVATION';
 
 export type ApiBaseResponse<T = unknown> = {
   status?: 'success' | 'error';
@@ -105,4 +107,10 @@ export type ArticlesParams = {
   page?: number;
   size?: number;
   sort?: string | string[];
+};
+
+export type CheeringCategoryStat = {
+  cheeringCategory: string;
+  count: number;
+  points: number;
 };

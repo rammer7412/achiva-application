@@ -57,7 +57,7 @@ const ArticleArea = forwardRef<ArticleAreaHandle, Props>(function ArticleArea({ 
         Skeleton
       ) : (
         <PaddingContainer>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -gap / 2 }}>
+        <View style={{ marginVertical: scaleHeight(4),flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -gap / 2 }}>
           {items.map((item) => (
             <TouchableOpacity
               key={item.id}

@@ -1,15 +1,25 @@
 // components/screen/profile/support/SupportButtonsCard.tsx
 import { PaddingContainer } from '@/components/containers/ScreenContainer';
+import { CategoryKey } from '@/hooks/useSupportStats';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-export type ButtonStat = { label: string; points: number };
+export type ButtonStat = { key: CategoryKey; label: string; points: number; count: number };
 
 type Props = { items: ButtonStat[] };
 
 export default function SupportButtonsCard({ items }: Props) {
   const { scaleFont, scaleHeight, smartScale, scaleWidth } = useResponsiveSize();
+
+  const seen = new Set<string>();
+  const safeItems = items.map((it, i) => {
+    const k = it?.key ?? `${it?.label ?? 'item'}-${i}`;
+    let finalKey = String(k);
+    if (seen.has(finalKey)) finalKey = `${finalKey}-${i}`;
+    seen.add(finalKey);
+    return { ...it, _key: finalKey };
+  });
 
   return (
     <PaddingContainer>
@@ -22,17 +32,16 @@ export default function SupportButtonsCard({ items }: Props) {
           },
         ]}
       >
-        {items.map((it, i) => (
-          
-          <View key={i} style={[styles.row, {marginHorizontal: scaleWidth(18),paddingVertical: scaleHeight(24) }]}>
-            <Text style={{ fontFamily: 'Pretendard-Variable', fontSize: scaleFont(18), color: '#2B1E19', fontWeight: '800' }}>
-              {it.label}
-            </Text>
-            <Text style={{ fontFamily: 'Pretendard-Variable', fontSize: scaleFont(15), color: '#6B6461', fontWeight: '700' }}>
-              {it.points} points
-            </Text>
-          </View>
-        ))}
+        {safeItems.map((it) => (
+        <View key={it._key} style={[styles.row, { paddingVertical: scaleHeight(10) }]}>
+          <Text style={{ fontSize: scaleFont(16), color: '#2B1E19', fontWeight: '800' }}>
+            {it.label}
+          </Text>
+          <Text style={{ fontSize: scaleFont(14), color: '#6B6461', fontWeight: '700' }}>
+            {(it.points ?? 0)} points
+          </Text>
+        </View>
+      ))}
       </View>
     </PaddingContainer>
   );
