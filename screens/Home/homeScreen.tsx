@@ -17,10 +17,10 @@ import {
 } from 'react-native';
 
 function HomeHeader() {
-  const {scaleHeight} = useResponsiveSize();
+  const { scaleHeight } = useResponsiveSize();
   return (
     <PaddingContainer>
-      <View style={{marginVertical: scaleHeight(20)}}>
+      <View style={{ marginVertical: scaleHeight(20) }}>
         <ACHIVALogo />
         {/* TODO: ConfirmButton 배치 */}
         <SimpleText text="나를 응원해준 사람들의 이야기" />
@@ -77,13 +77,10 @@ export default function HomeScreen() {
     fetchPage(page + 1, 'append');
   }, [fetchPage, isLast, loading, page]);
 
+  // 각 아이템 사이 간격은 ItemSeparator로 처리(성능+가독성)
   const renderItem: ListRenderItem<Article> = useCallback(
-    ({ item }) => (
-      <View style={{ marginTop: scaleHeight(20) }}>
-        <ArticleFrame item={item} />
-      </View>
-    ),
-    [scaleHeight]
+    ({ item }) => <ArticleFrame item={item} />,
+    []
   );
 
   const keyExtractor = useCallback((it: Article) => String(it.id), []);
@@ -108,6 +105,7 @@ export default function HomeScreen() {
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       onEndReachedThreshold={0.35}
       onEndReached={loadMore}
+      ItemSeparatorComponent={() => <View style={{ height: scaleHeight(20) }} />}
       contentContainerStyle={{ paddingBottom: scaleHeight(40) }}
     />
   );

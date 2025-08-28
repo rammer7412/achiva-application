@@ -1,3 +1,4 @@
+// components/screen/home/ArticleFrame.tsx
 import type { Article, Question } from '@/types/ApiTypes';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import { Ionicons } from '@expo/vector-icons';
@@ -22,7 +23,11 @@ type Props = {
 
 function timeAgo(iso: string) {
   const t = new Date(iso).getTime();
-  const diff = Math.max(0, Date.now() - t);
+  
+  // UTC → KST(+9h)
+  const kstTime = t + 9 * 60 * 60 * 1000;
+
+  const diff = Math.max(0, Date.now() - kstTime);
   const m = Math.floor(diff / 60000);
   if (m < 60) return `${m}m`;
   const h = Math.floor(m / 60);
@@ -33,12 +38,11 @@ function timeAgo(iso: string) {
 
 type PageItem =
   | { type: 'title' }
-  | { type: 'question'; data: Question };
+  | { type: 'question'; data: Question }
+  | { type: 'image' }; // 마지막 이미지 전용 페이지
 
-/** 반응형 스타일 생성기 */
 function useStyles() {
   const { scaleWidth, scaleHeight, scaleFont } = useResponsiveSize();
-
   return React.useMemo(
     () =>
       StyleSheet.create({
@@ -51,23 +55,12 @@ function useStyles() {
         },
         profileRow: { flexDirection: 'row', alignItems: 'center' },
         avatar: { backgroundColor: '#DDD', marginRight: scaleWidth(8) },
-        nickname: {
-          color: '#3E3E3E',
-          fontWeight: '700',
-          fontSize: scaleFont(14),
-        },
-        dot: {
-          color: '#9E9E9E',
-          marginHorizontal: scaleWidth(6),
-          fontSize: scaleFont(12),
-        },
+        nickname: { color: '#3E3E3E', fontWeight: '700', fontSize: scaleFont(14) },
+        dot: { color: '#9E9E9E', marginHorizontal: scaleWidth(6), fontSize: scaleFont(12) },
         timeInline: { color: '#9E9E9E', fontSize: scaleFont(12) },
-        menuButton: {
-          paddingLeft: scaleWidth(8),
-          paddingVertical: scaleHeight(4),
-        },
+        menuButton: { paddingLeft: scaleWidth(8), paddingVertical: scaleHeight(4) },
       }),
-    [scaleWidth, scaleHeight, scaleFont]
+    [scaleWidth, scaleHeight, scaleFont],
   );
 }
 
@@ -78,12 +71,13 @@ export default function ArticleFrame({ item, onPressMenu }: Props) {
   const [listWidth, setListWidth] = React.useState(0);
   const hasAvatar = !!item.memberProfileUrl;
 
+  // [대표타이틀, ...질문배열, 이미지전용(마지막)]
   const pages = React.useMemo<PageItem[]>(() => {
     const qPages: PageItem[] = (item.question ?? []).map((q) => ({
       type: 'question',
       data: q,
     }));
-    return [{ type: 'title' }, ...qPages];
+    return [{ type: 'title' }, ...qPages, { type: 'image' }];
   }, [item]);
 
   const onListLayout = (e: LayoutChangeEvent) => {
@@ -98,7 +92,7 @@ export default function ArticleFrame({ item, onPressMenu }: Props) {
         item={item}
         index={index}
         total={pages.length}
-        mode={page.type}
+        mode={page.type as 'title' | 'question' | 'image'}
         question={page.type === 'question' ? page.data : undefined}
         style={{ flex: 1 }}
       />
@@ -142,7 +136,7 @@ export default function ArticleFrame({ item, onPressMenu }: Props) {
         </TouchableOpacity>
       </View>
 
-      {/* 본문: 가로 스와이프 카드 (옆 카드 미노출 + 정사각형) */}
+      {/* 본문: 가로 스와이프(정사각형, 옆카드 미노출) */}
       <View onLayout={onListLayout}>
         <FlatList<PageItem>
           horizontal
