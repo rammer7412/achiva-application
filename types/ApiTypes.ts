@@ -38,7 +38,7 @@ export type LoginUser = {
   createdAt: string;        // ISO
 };
 
-export interface Article {
+export type Article = {
   id: number;
   photoUrl: string;
   title: string;

@@ -9,5 +9,4 @@ export type AuthState = {
   setTokens: (token: string | null, refreshToken?: string | null) => void;
   setUser: (user: User | null) => void;
   clearAuth: () => void;
-  refreshUser: () => Promise<void>;
 };

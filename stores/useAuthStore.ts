@@ -1,4 +1,3 @@
-import { getMe } from '@/api/users';
 import type { AuthState } from '@/types/AuthState';
 import { create } from 'zustand';
 
@@ -17,9 +16,4 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   clearAuth: () => set({ accessToken: null, refreshToken: null, user: null }),
 
-  refreshUser: async () => {
-    const me = await getMe();
-    const meData = me.data;
-    set({ user: meData });
-  },
 }));

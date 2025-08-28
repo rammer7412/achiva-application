@@ -4,17 +4,15 @@ import ArticleArea, { ArticleAreaHandle } from '@/components/screen/profile/Arti
 import { CategoriesArea } from '@/components/screen/profile/CategoriesArea';
 import { PointArea } from '@/components/screen/profile/PointArea';
 import { ProfileBox, ProfileHeader } from '@/components/screen/profile/ProfileArea';
-import { useAuthStore } from '@/stores/useAuthStore';
+import { refreshUser } from '@/utils/refresh';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { NativeScrollEvent, NativeSyntheticEvent, View } from 'react-native';
+import { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 
 export default function ProfileScreen() {
-
   const router = useRouter();
   const articleRef = React.useRef<ArticleAreaHandle>(null);
   const [refreshing, setRefreshing] = React.useState(false);
-  const refreshUser = useAuthStore((s) => s.refreshUser);
 
   const handleScroll = React.useCallback((e: NativeSyntheticEvent<NativeScrollEvent>) => {
     articleRef.current?.onParentScroll(e);
@@ -24,13 +22,13 @@ export default function ProfileScreen() {
     setRefreshing(true);
     try {
       await Promise.allSettled([
-        refreshUser(),                                 // 프로필(닉네임/사진/소개) 갱신
-        articleRef.current?.refresh?.() ?? Promise.resolve(), // 게시글 새로고침
+        refreshUser(),
+        articleRef.current?.refresh?.() ?? Promise.resolve(),
       ]);
     } finally {
       setRefreshing(false);
     }
-  }, [refreshUser]);
+  }, []);
 
   return (
     <ScrollContainer
@@ -39,26 +37,21 @@ export default function ProfileScreen() {
       refreshing={refreshing}
       onRefresh={onRefresh}
     >
-      <View>
-        <ProfileHeader/>
-      </View>
+      <ProfileHeader />
 
-      <ProfileBox button={
-        <SmallButton
-          size={18}
-          fontFamily="Pretendard-ExtraBold"
-          onPress={() => router.push('/profile/profileedit')}
-        />
+      <ProfileBox
+        button={
+          <SmallButton
+            size={18}
+            fontFamily="Pretendard-ExtraBold"
+            onPress={() => router.push('/profile/profileedit')}
+          />
         }
       />
 
-      <CategoriesArea/>
-
-      <PointArea/>
-
+      <CategoriesArea />
+      <PointArea />
       <ArticleArea ref={articleRef} />
-
     </ScrollContainer>
   );
 }
-

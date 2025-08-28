@@ -10,7 +10,6 @@ export async function getReceivingCategoryStats(
     { signal }
   );
   if (!res?.data?.data) throw new Error('Invalid response');
-  console.log(res.data.data);
   return res.data.data;
 }
 
