@@ -16,7 +16,8 @@ api.interceptors.request.use(
     if (token) {
       // @ts-expect-error 타입 경고 회피
       config.headers = { ...(config.headers ?? {}), Authorization: `Bearer ${token}` };
-    }
+    };
+    
     return config;
   },
   (error) => Promise.reject(error)

@@ -39,18 +39,42 @@ export async function userArticles(
   return res.data.data;
 }
 
+export async function userFeedArticles(
+  memberId: number,
+  params: ArticlesParams = {},
+  signal?: AbortSignal
+): Promise<PageResponse<Article>> {
+  const { page = 0, size = 12, sort = 'createdAt,DESC' } = params;
+
+  const res = await api.get<ApiBaseResponse<PageResponse<Article>>>(
+    `/api/members/${memberId}/feed`,
+    {
+      params: { page, size, sort },
+      signal,
+    }
+  );
+
+  if (!res?.data?.data) throw new Error('Invalid response');
+  console.log(res.data.data);
+  return res.data.data;
+}
+
 export async function HomeArticles(params?: ArticlesParams) {
   const res = await api.get<PageResponse<Article>>(
     '/api/articles/home',
     {
       params: {
         page: params?.page ?? 0,
-        size: params?.size ?? 6,
+        size: params?.size ?? 10,
         sort: params?.sort ?? 'createdAt,DESC',
       },
     },
+    
   );
-
+  if (__DEV__) {
+    console.log('[home] status', res.status, 'data.keys=', Object.keys(res.data ?? {}));
+    console.log('[home] page=', res.data?.number, 'size=', res.data?.size, 'total=', res.data?.totalElements);
+  }
   if (!res?.data) {
     throw new Error('Invalid response');
   }

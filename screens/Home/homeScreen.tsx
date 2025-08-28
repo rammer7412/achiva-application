@@ -1,5 +1,5 @@
 // screens/Home/HomeScreen.tsx
-import { HomeArticles } from '@/api/article';
+import { HomeArticles, userFeedArticles } from '@/api/article';
 import ArticleWriteButton from '@/components/buttons/ArticleWriteButton';
 import { PaddingContainer } from '@/components/containers/ScreenContainer';
 import PlusSquare from '@/components/icons/PlusSquare';
@@ -9,45 +9,59 @@ import { SimpleText } from '@/components/text/SimpleText';
 import type { Article, PageResponse } from '@/types/ApiTypes';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 
+import { useAuthStore } from '@/stores/useAuthStore';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
   ListRenderItem,
   RefreshControl,
+  TouchableOpacity,
   View,
 } from 'react-native';
 
-function HomeHeader() {
+type HeaderProps = { onPressLogo?: () => void };
+
+function HomeHeader({ onPressLogo }: HeaderProps) {
   const { scaleHeight, scaleWidth, scaleFont } = useResponsiveSize();
   return (
     <PaddingContainer>
       <View style={{ gap: scaleHeight(15), marginTop: scaleHeight(42) }}>
-        <ACHIVALogo color='#412A2A'/>
+
+        <TouchableOpacity activeOpacity={0.7} onPress={onPressLogo}>
+          <ACHIVALogo color="#412A2A" />
+        </TouchableOpacity>
+
         <ArticleWriteButton
           text="오늘의 새로운 이야기를 남겨주세요"
-          onPress={() => {/* 이동/작성 모달 열기 */}}
+          onPress={() => {
+          }}
           icon={<PlusSquare size={scaleWidth(18)} color="#FFFFFF" />}
         />
       </View>
-      <View style={{marginVertical: scaleHeight(12)}}>
-        <SimpleText text="나를 응원해준 사람들의 이야기" color='#412A2A' fontFamily='Pretendard-ExtraBold' size={scaleFont(20)} />
+      <View style={{ marginTop: scaleHeight(42), marginBottom: scaleHeight(12) }}>
+        <SimpleText
+          text="나를 응원해준 사람들의 이야기"
+          color="#412A2A"
+          fontFamily="Pretendard-ExtraBold"
+          size={scaleFont(16)}
+        />
       </View>
-      
     </PaddingContainer>
   );
 }
 
 export default function HomeScreen() {
-  const { scaleHeight } = useResponsiveSize();
+  const { scaleHeight, scaleWidth, scaleFont } = useResponsiveSize();
 
+  // ── 섹션1: 홈 피드(나를 응원해준 사람들) ──────────────────────────────
   const [items, setItems] = useState<Article[]>([]);
   const [page, setPage] = useState(0);
   const [size] = useState(6);
   const [isLast, setIsLast] = useState(false);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const loadingRef = useRef(false); // onEndReached 중복 방지
+  const loadingRef = useRef(false);
 
   const fetchPage = useCallback(
     async (p: number, mode: 'replace' | 'append') => {
@@ -55,7 +69,11 @@ export default function HomeScreen() {
       loadingRef.current = true;
       setLoading(true);
       try {
-        const data = (await HomeArticles({ page: p, size, sort: 'createdAt,DESC' })) as PageResponse<Article>;
+        const data = (await HomeArticles({
+          page: p,
+          size,
+          sort: 'createdAt,DESC',
+        })) as PageResponse<Article>;
         setIsLast(!!data.last);
         setPage(data.number);
         const next = data.content ?? [];
@@ -78,15 +96,20 @@ export default function HomeScreen() {
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await fetchPage(0, 'replace');
+    await fetchUFPage(0, 'replace'); // 섹션2도 같이 새로고침
     setRefreshing(false);
   }, [fetchPage]);
+
+  const onPressLogo = useCallback(() => {
+  if (refreshing || loadingRef.current) return; // 중복 탭 방지
+  onRefresh();                                  // 두 섹션 모두 리프레시
+}, [onRefresh, refreshing]);
 
   const loadMore = useCallback(() => {
     if (loadingRef.current || loading || isLast) return;
     fetchPage(page + 1, 'append');
   }, [fetchPage, isLast, loading, page]);
 
-  // 각 아이템 사이 간격은 ItemSeparator로 처리(성능+가독성)
   const renderItem: ListRenderItem<Article> = useCallback(
     ({ item }) => <ArticleFrame item={item} />,
     []
@@ -94,28 +117,177 @@ export default function HomeScreen() {
 
   const keyExtractor = useCallback((it: Article) => String(it.id), []);
 
-  const Footer = useMemo(
-    () =>
-      loading ? (
-        <View style={{ paddingVertical: scaleHeight(24) }}>
-          <ActivityIndicator />
-        </View>
-      ) : null,
-    [loading, scaleHeight]
+  // ── 섹션2: 관심있는 성취 카테고리 이야기(유저 피드) ──────────────────
+  const memberId = useAuthStore((s) => s.user?.id ?? null);
+
+  const [ufItems, setUFItems] = useState<Article[]>([]);
+  const [ufPage, setUFPage] = useState(0);
+  const [ufSize] = useState(6);
+  const [ufIsLast, setUFIsLast] = useState(false);
+  const [ufLoading, setUFLoading] = useState(false);
+  const [ufLoadingFirst, setUFLoadingFirst] = useState(false);
+  const ufLoadingRef = useRef(false);
+
+  const fetchUFPage = useCallback(
+    async (p: number, mode: 'replace' | 'append') => {
+      if (!memberId) return;
+      if (ufLoadingRef.current) return;
+      ufLoadingRef.current = true;
+      setUFLoading(true);
+      if (p === 0 && mode === 'replace') setUFLoadingFirst(true);
+      try {
+        const data = (await userFeedArticles(memberId, {
+          page: p,
+          size: ufSize,
+          sort: 'createdAt,DESC',
+        })) as PageResponse<Article>;
+        setUFIsLast(!!data.last);
+        setUFPage(data.number);
+        const next = data.content ?? [];
+        setUFItems((prev) => (mode === 'replace' ? next : [...prev, ...next]));
+      } catch (e) {
+        console.warn('[userFeed] fetch error', e);
+      } finally {
+        setUFLoading(false);
+        setUFLoadingFirst(false);
+        ufLoadingRef.current = false;
+      }
+    },
+    [memberId, ufSize]
   );
+
+  useEffect(() => {
+    if (memberId) fetchUFPage(0, 'replace');
+  }, [memberId, fetchUFPage]);
+
+  const loadUFMore = useCallback(() => {
+    if (ufLoadingRef.current || ufLoading || ufIsLast) return;
+    fetchUFPage(ufPage + 1, 'append');
+  }, [fetchUFPage, ufIsLast, ufLoading, ufPage]);
+
+  // ── Footer: 홈 로더 + 관심 카테고리 섹션 ────────────────────────────
+  const Footer = useMemo(() => {
+    return (
+      <View style={{ paddingBottom: scaleHeight(40) }}>
+        {/* 홈 피드 로딩 표시 */}
+        {loading ? (
+          <View style={{ paddingVertical: scaleHeight(24) }}>
+            <ActivityIndicator />
+          </View>
+        ) : null}
+
+        {/* 구분 여백 */}
+        <View style={{ height: scaleHeight(10) }} />
+
+        {/* 섹션2 헤더 */}
+        <PaddingContainer>
+          <View style={{ marginTop: scaleHeight(42), marginBottom: scaleHeight(12) }}>
+            <SimpleText
+              text="관심있는 성취 카테고리 이야기"
+              color="#412A2A"
+              fontFamily="Pretendard-ExtraBold"
+              size={scaleFont(16)}
+            />
+          </View>
+        </PaddingContainer>
+
+        {/* 섹션2 콘텐츠 */}
+        {ufLoadingFirst ? (
+          <View style={{ paddingVertical: scaleHeight(24), alignItems: 'center' }}>
+            <ActivityIndicator />
+          </View>
+        ) : ufItems.length === 0 ? (
+          <PaddingContainer>
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingVertical: scaleHeight(60),
+              }}
+            >
+              <SimpleText
+                text="관심 카테고리의 게시글이 아직 없어요"
+                color="#A5A5A5"
+                size={scaleFont(12)}
+              />
+              <View style={{ height: scaleHeight(6) }} />
+              <SimpleText
+                text="관심 카테고리를 더 추가해보세요!"
+                color="#A5A5A5"
+                size={scaleFont(12)}
+              />
+            </View>
+          </PaddingContainer>
+        ) : (
+          <View>
+            {/* 세로 리스트 - ArticleFrame 재사용 */}
+            <View style={{ height: scaleHeight(14) }} />
+              <View style={{ gap: scaleHeight(20) }}>
+                {ufItems.map((it) => (
+                  <ArticleFrame key={`uf-${it.id}`} item={it} />
+                ))}
+              </View>
+
+            {/* 더 보기 버튼 */}
+            {!ufIsLast ? (
+              <PaddingContainer>
+                <View style={{ alignItems: 'center' }}>
+                  <TouchableOpacity
+                    onPress={loadUFMore}
+                    activeOpacity={0.8}
+                    style={{
+                      marginTop: scaleHeight(18),
+                      paddingVertical: scaleHeight(10),
+                      paddingHorizontal: scaleWidth(18),
+                      borderRadius: 8,
+                      borderWidth: 1,
+                      borderColor: '#B8AEAA',
+                    }}
+                  >
+                    <SimpleText
+                      text={ufLoading ? '불러오는 중…' : '더 보기'}
+                      color="#412A2A"
+                      size={scaleFont(12)}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </PaddingContainer>
+            ) : null}
+
+            {/* 섹션2 로딩 표기(더 보기 중) */}
+            {ufLoading && (
+              <View style={{ paddingVertical: scaleHeight(16), alignItems: 'center' }}>
+                <ActivityIndicator />
+              </View>
+            )}
+          </View>
+        )}
+      </View>
+    );
+  }, [
+    loading,
+    scaleHeight,
+    ufItems,
+    ufIsLast,
+    ufLoading,
+    ufLoadingFirst,
+    loadUFMore,
+    scaleFont,
+    scaleWidth,
+  ]);
 
   return (
     <FlatList
       data={items}
       keyExtractor={keyExtractor}
       renderItem={renderItem}
-      ListHeaderComponent={<HomeHeader />}
+      ListHeaderComponent={<HomeHeader onPressLogo={onPressLogo}/>}
       ListFooterComponent={Footer}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       onEndReachedThreshold={0.35}
       onEndReached={loadMore}
       ItemSeparatorComponent={() => <View style={{ height: scaleHeight(20) }} />}
-      contentContainerStyle={{ paddingBottom: scaleHeight(40) }}
+      contentContainerStyle={{ paddingBottom: 0 }}
     />
   );
 }

@@ -10,7 +10,6 @@ import {
   ViewStyle,
 } from 'react-native';
 
-// 👉 아이콘들
 import CloverIcon from '@/components/icons/CloverIcon';
 import FlameIcon from '@/components/icons/FlameIcon';
 import HeartIcon from '@/components/icons/HeartIcon';
