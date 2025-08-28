@@ -38,3 +38,24 @@ export async function userArticles(
   if (!res?.data?.data) throw new Error('Invalid response');
   return res.data.data;
 }
+
+export async function HomeArticles(params?: ArticlesParams) {
+  const res = await api.get<PageResponse<Article>>(
+    '/api/articles/home',
+    {
+      params: {
+        page: params?.page ?? 0,
+        size: params?.size ?? 6,
+        sort: params?.sort ?? 'createdAt,DESC',
+      },
+    },
+  );
+
+  if (!res?.data) {
+    throw new Error('Invalid response');
+  }
+  console.log(res.data);
+  return res.data;
+}
+
+
