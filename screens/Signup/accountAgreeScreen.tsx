@@ -8,7 +8,7 @@ import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Linking, Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const BRAND = '#442727';
@@ -158,28 +158,28 @@ export default function AccountAgreeScreen() {
             onToggle={() => setAgreeService(!agreeService)}
             label="서비스 이용약관 동의"
             showDetail
-            onPressDetail={() => {}}
+            onPressDetail={() => {Linking.openURL('https://achivamain.notion.site/247f9799dbb880859f08f64d81bc6335')}}
           />
           <AgreementItem
             checked={agreePrivacy}
             onToggle={() => setAgreePrivacy(!agreePrivacy)}
             label="개인정보 수집 및 이용 동의"
             showDetail
-            onPressDetail={() => {}}
+            onPressDetail={() => {Linking.openURL('https://achivamain.notion.site/247f9799dbb880b4bc53cdd088cd06db?v=247f9799dbb88051bde7000cd649a398&p=247f9799dbb8800b8057d9fe46809e08&pm=c')}}
           />
           <AgreementItem
             checked={agreeCommunity}
             onToggle={() => setAgreeCommunity(!agreeCommunity)}
             label="커뮤니티 가이드라인 동의"
             showDetail
-            onPressDetail={() => {}}
+            onPressDetail={() => {Linking.openURL('https://achivamain.notion.site/247f9799dbb88068b0f6f25469bc85c8')}}
           />
           <AgreementItem
             checked={agreeConsign}
             onToggle={() => setAgreeConsign(!agreeConsign)}
             label="개인정보 처리 위탁 동의"
             showDetail
-            onPressDetail={() => {}}
+            onPressDetail={() => {Linking.openURL('https://achivamain.notion.site/247f9799dbb880a784f6dd15a4fea5d5')}}
           />
 
           {/* ===== 선택 약관 ===== */}
