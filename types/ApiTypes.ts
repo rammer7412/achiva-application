@@ -3,6 +3,7 @@ import type { Cheering } from "./Response";
 export type SortOption = 'createdAt,DESC' | 'createdAt,ASC';
 export type Variant = 'received' | 'sent';
 export type CategoryKey = 'BEST' | 'CHEER' | 'GOOD_JOB' | 'MOTIVATION';
+export type CategoryKeyKr = '최고예요' | '응원해요' | '수고했어요' | '동기부여';
 
 export type ApiBaseResponse<T = unknown> = {
   status?: 'success' | 'error';
@@ -124,4 +125,9 @@ export type CheeringCategoryStat = {
   cheeringCategory: string;
   count: number;
   points: number;
+};
+
+export type CreateCheeringPayload = {
+  content: string;
+  cheeringCategory: string;
 };

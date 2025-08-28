@@ -152,7 +152,7 @@ export default function ArticleFrame({ item, onPressMenu }: Props) {
 
       {/* 액션 바 */}
       <View style={{ marginTop: scaleHeight(10) }}>
-        <ActionBar />
+        <ActionBar articleId={item.id}/>
       </View>
     </View>
   );

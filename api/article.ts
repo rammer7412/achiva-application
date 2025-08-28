@@ -55,7 +55,6 @@ export async function userFeedArticles(
   );
 
   if (!res?.data?.data) throw new Error('Invalid response');
-  console.log(res.data.data);
   return res.data.data;
 }
 
@@ -71,14 +70,10 @@ export async function HomeArticles(params?: ArticlesParams) {
     },
     
   );
-  if (__DEV__) {
-    console.log('[home] status', res.status, 'data.keys=', Object.keys(res.data ?? {}));
-    console.log('[home] page=', res.data?.number, 'size=', res.data?.size, 'total=', res.data?.totalElements);
-  }
+
   if (!res?.data) {
     throw new Error('Invalid response');
   }
-  console.log(res.data);
   return res.data;
 }
 
