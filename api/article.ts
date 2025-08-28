@@ -17,7 +17,6 @@ export async function myArticles(params?: ArticlesParams) {
   if (!res?.data?.data) {
     throw new Error('Invalid response');  // 반환이 없으면 예외로 처리
   }
-  console.log(res.data.data);
   return res.data.data;
 }
 

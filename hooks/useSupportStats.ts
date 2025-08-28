@@ -1,4 +1,3 @@
-// hooks/useSupportStats.ts
 import { getReceivingCategoryStats, getSendingCategoryStats } from '@/api/cheering';
 import type { CategoryKey, Variant } from '@/types/ApiTypes';
 import * as React from 'react';
@@ -46,7 +45,6 @@ export function useSupportStats(
 
       const raw = await fetchStats(memberId, abort);
 
-      // 기본 0으로 모두 채운 뒤, 응답을 반영
       const acc: Record<CategoryKey, { points: number; count: number }> = {
         BEST: { points: 0, count: 0 },
         CHEER: { points: 0, count: 0 },
@@ -67,7 +65,7 @@ export function useSupportStats(
 
       const list: ButtonStatVM[] = ORDER.map((k) => ({
         key: k,
-        label: KEY_TO_LABEL[k],              // ← 화면 출력용(한글+이모지)
+        label: KEY_TO_LABEL[k],
         points: acc[k].points,
         count: acc[k].count,
       }));

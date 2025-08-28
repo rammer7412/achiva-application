@@ -11,6 +11,17 @@ export type ApiBaseResponse<T = unknown> = {
   data?: T;
 };
 
+export type UpdateProfilePayload = {
+  email: string;
+  nickName: string;
+  profileImageUrl: string;
+  birth: string;
+  gender: string;
+  region: string;
+  categories: string[];
+  description: string;
+};
+
 export type LoginRequest = {
   email: string;
   password: string;

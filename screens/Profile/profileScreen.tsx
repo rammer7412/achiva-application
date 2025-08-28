@@ -4,27 +4,33 @@ import ArticleArea, { ArticleAreaHandle } from '@/components/screen/profile/Arti
 import { CategoriesArea } from '@/components/screen/profile/CategoriesArea';
 import { PointArea } from '@/components/screen/profile/PointArea';
 import { ProfileBox, ProfileHeader } from '@/components/screen/profile/ProfileArea';
+import { useAuthStore } from '@/stores/useAuthStore';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { NativeScrollEvent, NativeSyntheticEvent, View } from 'react-native';
 
 export default function ProfileScreen() {
 
+  const router = useRouter();
   const articleRef = React.useRef<ArticleAreaHandle>(null);
   const [refreshing, setRefreshing] = React.useState(false);
+  const refreshUser = useAuthStore((s) => s.refreshUser);
 
   const handleScroll = React.useCallback((e: NativeSyntheticEvent<NativeScrollEvent>) => {
     articleRef.current?.onParentScroll(e);
   }, []);
 
   const onRefresh = React.useCallback(async () => {
-    if (!articleRef.current) return;
     setRefreshing(true);
     try {
-      await articleRef.current.refresh();
+      await Promise.allSettled([
+        refreshUser(),                                 // 프로필(닉네임/사진/소개) 갱신
+        articleRef.current?.refresh?.() ?? Promise.resolve(), // 게시글 새로고침
+      ]);
     } finally {
       setRefreshing(false);
     }
-  }, []);
+  }, [refreshUser]);
 
   return (
     <ScrollContainer
@@ -41,7 +47,7 @@ export default function ProfileScreen() {
         <SmallButton
           size={18}
           fontFamily="Pretendard-ExtraBold"
-          onPress={() => {/* 이동/액션 */}} //TODO - ROuter
+          onPress={() => router.push('/profile/profileedit')}
         />
         }
       />
