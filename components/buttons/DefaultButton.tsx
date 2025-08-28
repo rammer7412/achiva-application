@@ -24,7 +24,7 @@ export function SmallButton({
         {
           paddingHorizontal: scaleWidth(16),
           paddingVertical: scaleHeight(8),
-          borderRadius: scaleHeight(10),
+          borderRadius: scaleHeight(6),
         },
       ]}
     >

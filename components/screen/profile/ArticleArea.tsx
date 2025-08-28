@@ -17,7 +17,7 @@ type Props = {
 };
 
 const ArticleArea = forwardRef<ArticleAreaHandle, Props>(function ArticleArea({ onPressItem }, ref) {
-  const { smartScale, scaleHeight, scaleWidth, scaleFont } = useResponsiveSize();
+  const { scaleHeight, scaleWidth, scaleFont } = useResponsiveSize();
   const gap = scaleWidth(1);
 
   const [sort, setSort] = useState<SortOption>('createdAt,DESC');

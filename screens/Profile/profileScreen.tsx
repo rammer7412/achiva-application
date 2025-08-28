@@ -4,12 +4,10 @@ import ArticleArea, { ArticleAreaHandle } from '@/components/screen/profile/Arti
 import { CategoriesArea } from '@/components/screen/profile/CategoriesArea';
 import { PointArea } from '@/components/screen/profile/PointArea';
 import { ProfileBox, ProfileHeader } from '@/components/screen/profile/ProfileArea';
-import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import React from 'react';
 import { NativeScrollEvent, NativeSyntheticEvent, View } from 'react-native';
 
 export default function ProfileScreen() {
-  const { scaleHeight } = useResponsiveSize();
 
   const articleRef = React.useRef<ArticleAreaHandle>(null);
   const [refreshing, setRefreshing] = React.useState(false);
@@ -22,9 +20,9 @@ export default function ProfileScreen() {
     if (!articleRef.current) return;
     setRefreshing(true);
     try {
-      await articleRef.current.refresh();   // ✅ 새로고침 실행 & 대기
+      await articleRef.current.refresh();
     } finally {
-      setRefreshing(false);                 // ✅ 스피너 종료
+      setRefreshing(false);
     }
   }, []);
 
@@ -32,8 +30,8 @@ export default function ProfileScreen() {
     <ScrollContainer
       onScroll={handleScroll}
       scrollEventThrottle={16}
-      refreshing={refreshing}               // ✅ 당겨서 새로고침 표시
-      onRefresh={onRefresh}                 // ✅ 당겨서 새로고침 동작
+      refreshing={refreshing}
+      onRefresh={onRefresh}
     >
       <View>
         <ProfileHeader/>
@@ -43,7 +41,7 @@ export default function ProfileScreen() {
         <SmallButton
           size={18}
           fontFamily="Pretendard-ExtraBold"
-          onPress={() => {/* 이동/액션 */}}
+          onPress={() => {/* 이동/액션 */}} //TODO - ROuter
         />
         }
       />
