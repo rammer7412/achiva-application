@@ -23,7 +23,7 @@ type Props = {
 
 function timeAgo(iso: string) {
   const t = new Date(iso).getTime();
-  
+
   // UTC → KST(+9h)
   const kstTime = t + 9 * 60 * 60 * 1000;
 
@@ -51,7 +51,7 @@ function useStyles() {
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginBottom: scaleHeight(8),
+          marginVertical: scaleHeight(8),
         },
         profileRow: { flexDirection: 'row', alignItems: 'center' },
         avatar: { backgroundColor: '#DDD', marginRight: scaleWidth(8) },
@@ -86,7 +86,6 @@ export default function ArticleFrame({ item, onPressMenu }: Props) {
   };
 
   const renderCard: ListRenderItem<PageItem> = ({ item: page, index }) => (
-    // 정사각형: width = viewport, height = width
     <View style={{ width: listWidth || 0, aspectRatio: 1 }}>
       <ArticleCard
         item={item}
@@ -101,7 +100,6 @@ export default function ArticleFrame({ item, onPressMenu }: Props) {
 
   return (
     <View style={styles.wrapper}>
-      {/* 작성자 영역 */}
       <View style={styles.headerRow}>
         <View style={styles.profileRow}>
           {hasAvatar && (

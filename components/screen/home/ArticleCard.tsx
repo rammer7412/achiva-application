@@ -37,7 +37,7 @@ export default function ArticleCard({
 }: Props) {
   const { scaleWidth, scaleHeight, scaleFont, smartScale } = useResponsiveSize();
 
-  const radius = smartScale(12, 16);
+  const radius = smartScale(0,0);
   const padH = scaleWidth(20);
   const padV = scaleHeight(22);
   const minH = scaleHeight(220);
@@ -54,7 +54,7 @@ export default function ArticleCard({
         },
       ]}
     >
-      <Text style={[styles.pageBadgeText, { fontSize: scaleFont(11) }]}>
+      <Text style={[styles.pageBadgeText, { fontSize: scaleFont(15) }]}>
         {index + 1}/{total}
       </Text>
     </View>
@@ -65,7 +65,7 @@ export default function ArticleCard({
     const HeaderBody = (
       <>
         <Text
-          style={[styles.date, { fontSize: scaleFont(13), marginBottom: scaleHeight(12) }]}
+          style={[styles.date, { fontSize: scaleFont(16), marginBottom: scaleHeight(12) }]}
           numberOfLines={1}
         >
           {formatDotDate(item.createdAt)}
@@ -74,7 +74,7 @@ export default function ArticleCard({
         <Text
           style={[
             styles.bigTitle,
-            { fontSize: smartScale(28, 34), lineHeight: scaleHeight(40), marginBottom: scaleHeight(18) },
+            { fontSize: scaleFont(32), lineHeight: scaleHeight(40), marginBottom: scaleHeight(18) },
           ]}
           numberOfLines={2}
         >
@@ -127,14 +127,14 @@ export default function ArticleCard({
           style={{ paddingHorizontal: padH, paddingVertical: padV, minHeight: minH, justifyContent: 'center' }}
         >
           <Text
-            style={[styles.q, { fontSize: scaleFont(20), lineHeight: scaleHeight(28), marginBottom: scaleHeight(12) }]}
+            style={[styles.q, { fontSize: scaleFont(40), marginBottom: scaleHeight(12) }]}
             numberOfLines={2}
           >
             {question?.question ?? ''}
           </Text>
 
           {!!question?.content && (
-            <Text style={[styles.c, { fontSize: scaleFont(14), lineHeight: scaleHeight(22) }]} numberOfLines={5}>
+            <Text style={[styles.c, { fontSize: scaleFont(20)}]} numberOfLines={5}>
               {question.content}
             </Text>
           )}
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     width: '100%',
     overflow: 'hidden',
     position: 'relative',
-    flex: 1, // 부모의 정사각형 컨테이너 채우기
+    flex: 1,
   },
 
   // 타이틀 페이지 텍스트

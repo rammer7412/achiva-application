@@ -1,6 +1,8 @@
 // screens/Home/HomeScreen.tsx
 import { HomeArticles } from '@/api/article';
+import ArticleWriteButton from '@/components/buttons/ArticleWriteButton';
 import { PaddingContainer } from '@/components/containers/ScreenContainer';
+import PlusSquare from '@/components/icons/PlusSquare';
 import ACHIVALogo from '@/components/logo/ACHIVA-logo';
 import ArticleFrame from '@/components/screen/home/ArticleFrame';
 import { SimpleText } from '@/components/text/SimpleText';
@@ -17,14 +19,21 @@ import {
 } from 'react-native';
 
 function HomeHeader() {
-  const { scaleHeight } = useResponsiveSize();
+  const { scaleHeight, scaleWidth, scaleFont } = useResponsiveSize();
   return (
     <PaddingContainer>
-      <View style={{ marginVertical: scaleHeight(20) }}>
-        <ACHIVALogo />
-        {/* TODO: ConfirmButton 배치 */}
-        <SimpleText text="나를 응원해준 사람들의 이야기" />
+      <View style={{ gap: scaleHeight(15), marginTop: scaleHeight(42) }}>
+        <ACHIVALogo color='#412A2A'/>
+        <ArticleWriteButton
+          text="오늘의 새로운 이야기를 남겨주세요"
+          onPress={() => {/* 이동/작성 모달 열기 */}}
+          icon={<PlusSquare size={scaleWidth(18)} color="#FFFFFF" />}
+        />
       </View>
+      <View style={{marginVertical: scaleHeight(12)}}>
+        <SimpleText text="나를 응원해준 사람들의 이야기" color='#412A2A' fontFamily='Pretendard-ExtraBold' size={scaleFont(20)} />
+      </View>
+      
     </PaddingContainer>
   );
 }

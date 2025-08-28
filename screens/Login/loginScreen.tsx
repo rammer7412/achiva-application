@@ -119,7 +119,7 @@ export default function LoginScreen() {
             alignItems: 'center',
           }}
         >
-          <ACHIVALogo color="#4B2E2E" />
+          <ACHIVALogo color="#412A2A" />
         </View>
 
         <View

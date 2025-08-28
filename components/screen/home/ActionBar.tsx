@@ -1,7 +1,20 @@
+// components/bars/ActionBar.tsx
 import { PaddingContainer } from '@/components/containers/ScreenContainer';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from 'react-native';
+
+// 👉 아이콘들
+import CloverIcon from '@/components/icons/CloverIcon';
+import FlameIcon from '@/components/icons/FlameIcon';
+import HeartIcon from '@/components/icons/HeartIcon';
+import ThumbIcon from '@/components/icons/ThumbIcon';
 
 type Props = {
   actions?: string[];
@@ -12,15 +25,24 @@ type Props = {
   initialSelected?: string[];
 };
 
+const ICON_BY_LABEL: Record<
+  string,
+  React.ComponentType<{ size?: number; color?: string }>
+> = {
+  최고예요: ThumbIcon,
+  수고했어요: FlameIcon,
+  응원해요: HeartIcon,
+  동기부여: CloverIcon,
+};
+
 export default function ActionBar({
   actions = ['최고예요', '수고했어요', '응원해요', '동기부여'],
   style,
   onPressAction,
-  initialSelected = [], // 기본: 전부 꺼짐
+  initialSelected = [],
 }: Props) {
-  const { scaleWidth, scaleHeight, scaleFont, smartScale } = useResponsiveSize();
+  const { scaleWidth, scaleHeight, scaleFont } = useResponsiveSize();
 
-  // 다중 선택을 위한 Set
   const [selectedSet, setSelectedSet] = React.useState<Set<string>>(
     () => new Set(initialSelected),
   );
@@ -31,14 +53,14 @@ export default function ActionBar({
         container: {
           flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: scaleWidth(8),
+          flexWrap: 'wrap',
+          gap: scaleWidth(4),
         },
         btnBase: {
-          paddingVertical: scaleHeight(12),
-          paddingHorizontal: scaleWidth(18),
+          paddingVertical: scaleHeight(8),
+          paddingHorizontal: scaleWidth(10),
           borderRadius: 36,
-          borderWidth: scaleWidth(2),
+          borderWidth: scaleWidth(1.2),
         },
         btnOn: {
           backgroundColor: '#412A2A',
@@ -48,18 +70,25 @@ export default function ActionBar({
           backgroundColor: '#FFFFFF',
           borderColor: '#412A2A',
         },
+        contentRow: {
+          flexDirection: 'row',
+          alignItems: 'center',
+        },
         textOn: {
           color: '#FFFFFF',
-          fontSize: scaleFont(15),
+          fontSize: scaleFont(14),
           fontFamily: 'Pretendard-ExtraBold',
         },
         textOff: {
           color: '#412A2A',
-          fontSize: scaleFont(15),
+          fontSize: scaleFont(14),
           fontFamily: 'Pretendard-ExtraBold',
         },
+        iconSpacer: {
+          marginLeft: scaleWidth(8),
+        },
       }),
-    [scaleWidth, scaleHeight, scaleFont, smartScale],
+    [scaleWidth, scaleHeight, scaleFont],
   );
 
   const hit = {
@@ -73,21 +102,26 @@ export default function ActionBar({
     setSelectedSet((prev) => {
       const next = new Set(prev);
       if (next.has(label)) {
-        next.delete(label); // 다시 누르면 꺼짐
+        next.delete(label);
         onPressAction?.(label, false);
       } else {
-        next.add(label); // 여러 개 켤 수 있음
+        next.add(label);
         onPressAction?.(label, true);
       }
       return next;
     });
   };
 
+  const ICON_SIZE = scaleWidth(8);
+
   return (
     <PaddingContainer>
       <View style={[styles.container, style]}>
         {actions.map((label) => {
           const isOn = selectedSet.has(label);
+          const IconComp = ICON_BY_LABEL[label];
+          const iconColor = isOn ? '#FFFFFF' : '#412A2A';
+
           return (
             <TouchableOpacity
               key={label}
@@ -96,7 +130,14 @@ export default function ActionBar({
               hitSlop={hit}
               onPress={() => toggle(label)}
             >
-              <Text style={isOn ? styles.textOn : styles.textOff}>{label}</Text>
+              <View style={styles.contentRow}>
+                <Text style={isOn ? styles.textOn : styles.textOff}>{label}</Text>
+                {IconComp ? (
+                  <View style={styles.iconSpacer}>
+                    <IconComp size={ICON_SIZE} color={iconColor} />
+                  </View>
+                ) : null}
+              </View>
             </TouchableOpacity>
           );
         })}

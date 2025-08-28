@@ -61,7 +61,7 @@ export function PaddingContainer({ children }: Props){
   const { scaleWidth } = useResponsiveSize();
   return (
   <View
-    style={{paddingHorizontal: scaleWidth(20), backgroundColor: '#d1d2b9ff'}}>
+    style={{paddingHorizontal: scaleWidth(20)}}>
     {children}
   </View>
   )
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
   },
   scrollContent: {
-    flexGrow: 1, // ScrollView가 남는 공간을 다 채우게
+    flexGrow: 1,
     backgroundColor: '#fff',
   },
 });

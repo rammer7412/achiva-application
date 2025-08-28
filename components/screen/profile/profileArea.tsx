@@ -75,6 +75,7 @@ export function ProfileBox({ button }: ProfileBoxProps) {
             <SimpleText
               size={16}
               color="#8E8E8E"
+              fontFamily="Pretendard-Bold"
               numberOfLines={1}
               ellipsizeMode="tail"
               style={{ marginTop: scaleHeight(4) }}

@@ -27,7 +27,7 @@ export default function ConfirmButton({
   const { scaleHeight, scaleWidth, scaleFont } = useResponsiveSize();
 
   const buttonStyle: ViewStyle = {
-    height: scaleHeight(56),
+    height: scaleHeight(50),
     borderRadius: scaleWidth(4),        // 둥글게
     paddingHorizontal: scaleWidth(16),   // 좌우 기본 패딩
   };

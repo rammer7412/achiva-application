@@ -3,13 +3,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    Image,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
+  ActivityIndicator,
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 
 import * as ImagePicker from 'expo-image-picker';
@@ -25,7 +25,6 @@ import type { UpdateProfilePayload } from '@/types/ApiTypes';
 import type { User } from '@/types/User';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 
-// ⬇️ 네가 둔 모듈 경로에 맞춰 조정 (users or members)
 import { getProfilePresignedUrl, uploadToS3 } from '@/api/uploads';
 import { getMe, updateMyProfile } from '@/api/users';
 
@@ -39,7 +38,7 @@ export default function ProfileEditScreen() {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(true);  // ⬅️ 초기 로딩 표시용
+  const [initialLoading, setInitialLoading] = useState(true);
   const [me, setMe] = useState<User | null>(null);
 
   const [nickName, setNickName] = useState('');
@@ -53,13 +52,11 @@ export default function ProfileEditScreen() {
   const [editingDesc, setEditingDesc] = useState(false);
   const [editingCategories, setEditingCategories] = useState(false);
 
-  // ✅ 초기 로드: getMe() 응답이 ApiBaseResponse<User> 또는 User 둘 다 대응
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
         const res = await getMe();
-        // 응답이 { data: User } 형태면 data 사용, 아니면 그대로 사용
         const data: User = (res as any)?.data ?? (res as any);
         if (!mounted) return;
         setMe(data);
@@ -216,7 +213,6 @@ export default function ProfileEditScreen() {
       <View style={styles.content}>
         <TitleWithBack title="프로필 수정" />
 
-        {/* ⬇️ 초기 로딩일 때 간단한 로더 (선택) */}
         {initialLoading ? (
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <ActivityIndicator />
