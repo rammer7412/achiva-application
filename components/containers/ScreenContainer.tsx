@@ -1,6 +1,6 @@
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import React, { ReactNode } from 'react';
-import { ScrollView, StyleSheet, View, ViewStyle } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet, View, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Props = {
@@ -28,19 +28,32 @@ export function ScreenContainer({ children }: Props) {
   );
 }
 
-export function ScrollContainer({ children }: ScrollContainerProps) {
+export function ScrollContainer({
+  children,
+  onScroll,
+  scrollEventThrottle = 16,
+  refreshing = false,
+  onRefresh,
+  contentContainerStyle,
+}: ScrollContainerProps) {
   return (
-    <SafeAreaView
-      style={styles.safeareaContainer}
-      edges={['top']}
-    >
+    <SafeAreaView style={styles.safeareaContainer} edges={['top']}>
       <ScrollView
-        contentContainerStyle={styles.scrollContent}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
         showsVerticalScrollIndicator={false}
+        // ✅ 콘텐츠가 짧아도 당겨서 새로고침 동작
+        bounces
+        alwaysBounceVertical
+        overScrollMode="always"
+        refreshControl={
+          <RefreshControl refreshing={!!refreshing} onRefresh={onRefresh} />
+        }
+        contentContainerStyle={[styles.scrollContent, contentContainerStyle]}
       >
         {children}
       </ScrollView>
-    </SafeAreaView>    
+    </SafeAreaView>
   );
 }
 
