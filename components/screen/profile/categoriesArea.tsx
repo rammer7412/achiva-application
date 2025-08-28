@@ -18,8 +18,7 @@ export function CategoriesArea({
     <PaddingContainer>
       <View
         style={{
-          paddingTop: scaleHeight(8),
-          paddingBottom: scaleHeight(30),
+          paddingBottom: scaleHeight(12),
         }}
       >
         {/* 제목 */}

@@ -9,7 +9,7 @@ type Props = {
 } & TouchableOpacityProps;
 
 export function SmallButton({
-  size = 18,
+  size = 16,
   fontFamily = 'Pretendard-ExtraBold',
   ...touchableProps
 }: Props) {
@@ -22,7 +22,7 @@ export function SmallButton({
       style={[
         styles.button,
         {
-          paddingHorizontal: scaleWidth(16),
+          paddingHorizontal: scaleWidth(10),
           paddingVertical: scaleHeight(8),
           borderRadius: scaleHeight(6),
         },

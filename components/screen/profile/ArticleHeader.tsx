@@ -25,7 +25,6 @@ export default function ArticleHeader({ total, sort, onChangeSort }: Props) {
         styles.row,
         {
           paddingHorizontal: scaleWidth(16),
-          paddingTop: scaleHeight(2),
           paddingBottom: scaleHeight(8),
         },
       ]}

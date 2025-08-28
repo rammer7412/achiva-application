@@ -41,7 +41,7 @@ export function ProfileBox({ button }: ProfileBoxProps) {
         style={[
           styles.row,
           {
-            paddingBottom: scaleHeight(30),
+            paddingBottom: scaleHeight(12),
           },
         ]}
       >
@@ -84,7 +84,7 @@ export function ProfileBox({ button }: ProfileBoxProps) {
           )}
           
           {button ? (
-            <View style={{ marginTop: scaleHeight(16), alignSelf: 'flex-start' }}>
+            <View style={{ marginTop: scaleHeight(10), alignSelf: 'flex-start' }}>
               {button}
             </View>
           ) : null}

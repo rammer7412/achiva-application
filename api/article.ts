@@ -20,3 +20,22 @@ export async function myArticles(params?: ArticlesParams) {
   console.log(res.data.data);
   return res.data.data;
 }
+
+export async function userArticles(
+  memberId: number,
+  params: ArticlesParams = {},
+  signal?: AbortSignal
+): Promise<PageResponse<Article>> {
+  const { page = 0, size = 12, sort = 'createdAt,DESC' } = params;
+
+  const res = await api.get<ApiBaseResponse<PageResponse<Article>>>(
+    `/api/member/${memberId}/articles`,
+    {
+      params: { page, size, sort },
+      signal,
+    }
+  );
+
+  if (!res?.data?.data) throw new Error('Invalid response');
+  return res.data.data;
+}
