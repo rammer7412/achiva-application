@@ -131,3 +131,12 @@ export type CreateCheeringPayload = {
   content: string;
   cheeringCategory: string;
 };
+
+export type QA = { question: string; content: string };
+
+export type PostedArticle = {
+  photoUrl: string;
+  title: string;
+  category: string;
+  question: QA[];
+};

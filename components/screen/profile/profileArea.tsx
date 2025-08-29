@@ -1,4 +1,3 @@
-// components/ProfileBox.tsx
 import { PaddingContainer } from '@/components/containers/ScreenContainer';
 import EmptyProfileIcon from '@/components/icons/EmptyProfileIcon';
 import GearSixIcon from '@/components/icons/GearSixIcon';
@@ -14,7 +13,7 @@ type ProfileBoxProps = {
 };
 
 export function ProfileHeader() {
-  const { scaleWidth} = useResponsiveSize();
+  const { scaleWidth } = useResponsiveSize();
   return (
     <PaddingContainer>
       <View style={{marginTop: scaleWidth(10), width: '100%', flexDirection: 'row', justifyContent: 'flex-end' }}>

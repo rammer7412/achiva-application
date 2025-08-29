@@ -1,10 +1,8 @@
-// @/screens/Post/ChooseContentsScreen.tsx
-import ScreenContainer from '@/components/ScreenContainer';
-import TitleWithBack from '@/components/TitleWithBack';
 import SmallBox from '@/components/boxes/SmallBox';
 import ConfirmButton from '@/components/buttons/ConfirmButton';
-
-import CheckIcon from '@/components/icons/CheckIcon'; // ★ 추가
+import { FlexPaddingContainer } from '@/components/containers/ScreenContainer';
+import { BackHeader } from '@/components/header/BackHeader';
+import CheckIcon from '@/components/icons/CheckIcon';
 import DotSixVertical from '@/components/icons/DotSixVertical';
 import NoticeMessageTitle from '@/components/text/NoticeMessageTitle';
 import { usePostDraftStore } from '@/stores/usePostDraftStore';
@@ -19,8 +17,15 @@ const MAX_BLOCKS = 10;
 const MIN_BLOCKS = 1;
 
 const CATEGORY_TEMPLATES: Record<string, string[]> = {
-  '운동': ['오늘 운동 루틴 요약', '힘들지만 해낸 동작', '컨디션 체크 기록', '운동하며 떠오른 메모'],
-  '공부': ['오늘 공부 루틴 요약', '어려웠던 개념', '학습 체크 기록', '공부하며 떠오른 메모', '오늘 공부하며 든 생각'],
+  '운동': ['오늘 운동한 내용 정리', '운동 중 느낀 난이도', '몸 상태와 컨디션', '변화 기록', '다음 운동 계획', '운동하며 떠오른 메모'],
+  '공부': ['오늘 공부한 내용 정리', '이해가 어려웠던 부분', '외워야 할 핵심 요약', '공부 진행 상황', '내일 공부 계획', '오늘 공부하며 든 생각'],
+  '독서': ['오늘 읽은 책과 저자', '기억에 남는 문장', '오늘 읽은 분량', '책에서 얻은 인사이트', '읽으면서 든 생각', '다음 독서 계획'],
+  '커리어': ['오늘 진행한 주요 업무', '현재 커리어에 대한 생각', '업무 중 새로 배운 점', '어려웠던 문제와 원인', '해결 방법', '향후 커리어 계획'],
+  '루틴': ['오늘 지킨 습관', '성공·실패 요인', '루틴에서 느낀 점', '개선할 부분', '내일 루틴 계획', '의지를 다지는 한 마디'],
+  '마인드셋': ['오늘 정리한 생각 하나', '감사했던 일', '놓지고 싶지 않은 관점', '힘들었던 순간', '극복 방법', '내일의 마음가짐'],
+  '투자': ['오늘 투자 내용', '수익·손실 요약', '투자 판단 근거', '오늘 본 시장 흐름', '다음 투자 계획', '투자 마인드셋'],
+  '자기계발': ['오늘 도전한 활동', '참고한 자료', '새로 익힌 기술·지식', '실행하며 느낀 점', '개선하고 싶은 점', '다음 실행 계획'],
+  '취미': ['오늘 한 취미 활동', '오늘의 결과 기록', '만족스러웠던 포인트', '어려웠던 부분', '개선 아이디어', '다음 시도 계획'],
 };
 
 type Item = { id: string; label: string; isCustom?: boolean };
@@ -97,8 +102,8 @@ export default function ChooseContentsScreen() {
       text: '',
     }));
     setBlocks(blocks);
-    // 👇 바로 에디터가 아니라 색상 선택 화면으로 이동
-    router.push('/post/choosecolor');
+
+    router.push('/(tab)/post/choosecolor');
   };
 
   const renderItem = ({ item, drag, isActive }: RenderItemParams<Item>) => {
@@ -140,9 +145,9 @@ export default function ChooseContentsScreen() {
   };
 
   return (
-    <ScreenContainer>
+    <FlexPaddingContainer>
+      <BackHeader/>
       <View style={{ flex: 1, paddingHorizontal: scaleWidth(24), backgroundColor: '#fff' }}>
-        <TitleWithBack showTitle={false} showSeparator={false} />
         <NoticeMessageTitle message="작성할 내용들을 선택해주세요" />
 
         {/* 카테고리 뱃지 */}
@@ -214,6 +219,6 @@ export default function ChooseContentsScreen() {
           </View>
         </View>
       </View>
-    </ScreenContainer>
+    </FlexPaddingContainer>
   );
 }

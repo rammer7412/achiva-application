@@ -1,6 +1,5 @@
-import ScreenContainer from '@/components/ScreenContainer';
-import TitleWithBack from '@/components/TitleWithBack';
 import ConfirmButton from '@/components/buttons/ConfirmButton';
+import { ScreenContainer } from '@/components/containers/ScreenContainer';
 import NoticeMessageTitle from '@/components/text/NoticeMessageTitle';
 import { usePostDraftStore } from '@/stores/usePostDraftStore';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
@@ -34,7 +33,6 @@ export default function ChooseColorScreen() {
   return (
     <ScreenContainer>
       <View style={{ flex:1, backgroundColor:'#fff', paddingHorizontal: scaleWidth(24) }}>
-        <TitleWithBack showTitle={false} showSeparator={false} />
         <NoticeMessageTitle message="배경색을 선택해주세요" />
 
         <View

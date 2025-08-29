@@ -1,10 +1,10 @@
-// @/screens/Post/PreviewCover.tsx
+import type { CreateArticleRequest } from '@/api/post';
+import { createArticle } from '@/api/post';
 import ConfirmButton from '@/components/buttons/ConfirmButton';
 import { ScreenContainer } from '@/components/containers/ScreenContainer';
 import TitleWithBack from '@/components/header/TitleWithBack';
 import { usePostDraftStore } from '@/stores/usePostDraftStore';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
-import { buildCreateArticleDTO, createArticle } from '@/utils/postApi';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import {
@@ -21,7 +21,7 @@ export default function PreviewCover() {
 
   const category  = usePostDraftStore(s => s.category);
   const blocks    = usePostDraftStore(s => s.blocks);
-  // AddPhotoScreen에서 presigned 업로드 후 저장해둔 S3 accessUrl
+
   const photoUri  = usePostDraftStore(s => s.photoUri);
   const reset     = usePostDraftStore(s => s.reset);
 
@@ -33,9 +33,8 @@ export default function PreviewCover() {
     radius: 10,
   }), [scaleHeight]);
 
-  // 오늘 날짜를 "YYYY.MM.DD" 형식으로 표시
   const todayText = useMemo(() => {
-    const now = new Date(); // 디바이스 로컬 시간대
+    const now = new Date();
     const y = now.getFullYear();
     const m = String(now.getMonth() + 1).padStart(2, '0');
     const d = String(now.getDate()).padStart(2, '0');
@@ -56,24 +55,37 @@ export default function PreviewCover() {
       return;
     }
 
+    const qa = blocks
+      .map((b: any) => ({
+        question: String(b?.question ?? '').trim(),
+        content : String(b?.content  ?? '').trim(),
+      }))
+      .filter(q => q.question.length > 0 || q.content.length > 0);
+
+    if (qa.length === 0) {
+      Alert.alert('알림', '질문/내용이 비어 있습니다.');
+      return;
+    }
+
+    const payload: CreateArticleRequest = {
+      photoUrl: photoUri,
+      title: '오늘의 성취',          // 필요하면 상태/입력값으로 교체
+      category,                      // store에서 가져온 카테고리
+      question: qa,                  // 위에서 변환한 QA[]
+      backgroundColor: '#f9f9f9',    // 선택값이 있으면 교체/삭제
+    };
+
     try {
       setSubmitting(true);
-
-      // 1) DTO 생성 + S3 accessUrl 주입
-      const dto = buildCreateArticleDTO(category, blocks);
-      (dto as any).photoUrl = photoUri; // 서버 스펙: photoUrl
-
-      // 2) 게시글 생성(JSON)
-      const created = await createArticle(dto);
-      if (__DEV__) console.log('[PreviewCover] 게시글 생성 완료:', created);
-
+      const created = await createArticle(payload);
+      console.log(created);
       Alert.alert('완료', '게시글이 업로드되었습니다.', [
         {
           text: '확인',
           onPress: () => {
-            router.replace('/post');      // Post 스택 정리
+            router.dismissTo('/post');
             requestAnimationFrame(() => {
-              router.replace('/home' as any);
+              router.replace('/(tab)/home');
               setTimeout(() => reset(), 0);
             });
           },

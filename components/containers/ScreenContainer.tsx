@@ -57,11 +57,21 @@ export function ScrollContainer({
   );
 }
 
-export function PaddingContainer({ children }: Props){
+export function PaddingContainer({ children}: Props){
   const { scaleWidth } = useResponsiveSize();
   return (
   <View
-    style={{paddingHorizontal: scaleWidth(20)}}>
+    style={{ paddingHorizontal: scaleWidth(20), backgroundColor: '#e1f5bbff'}}>
+    {children}
+  </View>
+  )
+}
+
+export function FlexPaddingContainer({ children}: Props){
+  const { scaleWidth } = useResponsiveSize();
+  return (
+  <View
+    style={{ flex: 1, paddingHorizontal: scaleWidth(20), backgroundColor: '#e1f5bbff'}}>
     {children}
   </View>
   )

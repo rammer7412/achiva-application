@@ -1,6 +1,5 @@
-// @/screens/Post/Editor/EditorCardScreen.tsx
-import HeaderWithBack from '@/components/HeaderWithBack';
-import ScreenContainer from '@/components/ScreenContainer';
+import { ScreenContainer } from '@/components/containers/ScreenContainer';
+import HeaderWithBack from '@/components/header/HeaderWithBack';
 import { usePostDraftStore } from '@/stores/usePostDraftStore';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import { editorHref } from '@/utils/routes';
@@ -89,9 +88,8 @@ export default function EditorCardScreen() {
       return;
     }
 
-    // ✅ 마지막 카드 → 사진 추가 화면으로 이동
     if (__DEV__) console.log('[EditorCard] -> go AddPhotoScreen');
-    router.push('/post/editor/addphoto');
+    router.push('/(tab)/post/addphoto');
   };
 
   const previewBg = cardColor || '#B77A77';
@@ -107,7 +105,6 @@ export default function EditorCardScreen() {
         <HeaderWithBack
           total={total}
           current={idx + 1}
-          showSeparator={false}
           rightButton={{ label: '다음', onPress: saveAndNextOrFinish, disabled: submitting }}
         />
 
