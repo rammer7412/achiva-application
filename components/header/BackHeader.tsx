@@ -4,10 +4,10 @@ import { TouchableOpacity, View } from 'react-native';
 import CaretLeft from '../icons/CaretLeftIcon';
 
 type Props = {
-  onPressClose?: () => void;
+  onPressBack?: () => void;
 };
 
-export function BackHeader({ onPressClose }: Props) {
+export function BackHeader({ onPressBack: onPressClose }: Props) {
   const { scaleHeight, scaleWidth } = useResponsiveSize();
   const hit = {
     top: scaleHeight(6),
@@ -19,7 +19,7 @@ export function BackHeader({ onPressClose }: Props) {
   return (
     <View
       style={{
-        marginTop: scaleHeight(24),
+        marginTop: scaleHeight(48),
       }}
     >
       <TouchableOpacity

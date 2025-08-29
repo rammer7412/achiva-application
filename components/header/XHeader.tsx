@@ -19,7 +19,7 @@ export function XHeader({ onPressClose }: Props) {
   return (
     <View
       style={{
-        marginTop: scaleHeight(24),
+        marginTop: scaleHeight(48),
       }}
     >
       <TouchableOpacity

@@ -82,7 +82,7 @@ export default function ArticleCard({
         </Text>
 
         <Text style={[styles.sub, { fontSize: scaleFont(20), lineHeight: scaleHeight(28) }]} numberOfLines={2}>
-          <Text style={styles.subEm}>{item.category}</Text> 기록{'\n'}1번째 이야기
+          <Text style={styles.subEm}>{item.category}</Text> 기록{'\n'}{item.authorCategorySeq}번째 이야기
         </Text>
       </>
     );

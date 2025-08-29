@@ -44,7 +44,7 @@ export default function PostScreen() {
   return (
     <FlexPaddingContainer>
       <XHeader onPressClose={() => setExitOpen(true)} />
-      <View style={{ flex:0.8, backgroundColor: '#fff' }}>
+      <View style={{ flex:0.8}}>
 
         <NoticeMessageTitle message="작성할 성취 카테고리를 선택해주세요" />
 
@@ -100,7 +100,7 @@ export default function PostScreen() {
               </Text>
             </View>
 
-            <View style={{ height: 1, backgroundColor: '#EFEFEF' }} />
+            <View style={{ height: 1, backgroundColor: '#fff' }} />
 
             <TouchableOpacity
               onPress={handleDiscard}

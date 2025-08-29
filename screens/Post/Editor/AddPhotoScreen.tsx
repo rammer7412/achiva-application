@@ -54,7 +54,6 @@ export default function AddPhotoScreen() {
     }
   };
 
-  /** 다음 → 표지 미리보기 (사진이 없어도 진행 가능) */
   const goPreview = () => {
     router.push('/(tab)/post/previewcover');
   };
@@ -73,7 +72,7 @@ export default function AddPhotoScreen() {
                 ? { uri: localPreview }
                 : currentPhoto
                 ? { uri: currentPhoto }
-                : require('@/assets/images/react-logo.png') // 플레이스홀더
+                : require('@/assets/images/react-logo.png')
             }
             style={{
               width: '100%',
@@ -85,7 +84,7 @@ export default function AddPhotoScreen() {
           />
         </View>
 
-        <View style={{ marginTop: 'auto', marginBottom: scaleHeight(24) }}>
+        <View style={{ gap:scaleHeight(12), marginTop: 'auto', marginBottom: scaleHeight(24) }}>
           <ConfirmButton
             text={uploading ? '업로드 중...' : '갤러리에서 선택'}
             onPress={pickFromGallery}

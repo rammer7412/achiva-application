@@ -134,9 +134,10 @@ export type CreateCheeringPayload = {
 
 export type QA = { question: string; content: string };
 
-export type PostedArticle = {
+export type CreateArticleRequest = {
   photoUrl: string;
   title: string;
   category: string;
   question: QA[];
+  backgroundColor: string;
 };

@@ -15,7 +15,6 @@ export default function NoticeMessageTitle({ message, subtitle }: Props) {
       style={{
         marginTop: scaleHeight(36),
         marginBottom: scaleHeight(24),
-        paddingHorizontal: scaleWidth(8),
       }}
     >
       <Text
@@ -24,7 +23,7 @@ export default function NoticeMessageTitle({ message, subtitle }: Props) {
           fontWeight: 'bold',
           color: '#111',
           textAlign: 'left',
-          fontFamily: 'Pretendard-ExtraBold',
+          fontFamily: 'Pretendard-Variable',
         }}
       >
         {message}
@@ -33,8 +32,7 @@ export default function NoticeMessageTitle({ message, subtitle }: Props) {
         <Text
           style={{
             marginTop: scaleHeight(14),
-            fontSize: scaleFont(15),
-            lineHeight: scaleHeight(24),
+            fontSize: scaleFont(16),
             marginBottom: scaleHeight(14),
             color: '#555',
             textAlign: 'left',

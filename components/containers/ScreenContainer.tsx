@@ -61,7 +61,7 @@ export function PaddingContainer({ children}: Props){
   const { scaleWidth } = useResponsiveSize();
   return (
   <View
-    style={{ paddingHorizontal: scaleWidth(20), backgroundColor: '#e1f5bbff'}}>
+    style={{ paddingHorizontal: scaleWidth(20)}}>
     {children}
   </View>
   )
@@ -71,7 +71,7 @@ export function FlexPaddingContainer({ children}: Props){
   const { scaleWidth } = useResponsiveSize();
   return (
   <View
-    style={{ flex: 1, paddingHorizontal: scaleWidth(20), backgroundColor: '#e1f5bbff'}}>
+    style={{ flex: 1, paddingHorizontal: scaleWidth(20), backgroundColor: '#fff'}}>
     {children}
   </View>
   )

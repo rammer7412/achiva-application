@@ -2,14 +2,11 @@ import { login } from '@/api/auth';
 import { getMe } from '@/api/users';
 import ConfirmButton from '@/components/buttons/ConfirmButton';
 import { ScreenContainer } from '@/components/containers/ScreenContainer';
-import TitleWithBack from '@/components/header/TitleWithBack';
 import PasswordInput from '@/components/inputbox/PasswordInput';
 import SimpleInput from '@/components/inputbox/SimpleInput';
 import ACHIVALogo from '@/components/logo/ACHIVA-logo';
-import { ThinText } from '@/components/text/TextWithNode';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
-import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
@@ -101,7 +98,7 @@ export default function LoginScreen() {
   };
 
   const isDisabled = loading || email.trim() === '' || password.trim() === '';
-
+  
   return (
     <ScreenContainer>
       <View
@@ -111,7 +108,7 @@ export default function LoginScreen() {
           backgroundColor: '#fff',
         }}
       >
-        <TitleWithBack title="로그인" />
+        
 
         <View
           style={{
@@ -174,64 +171,6 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </View>
 
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginVertical: scaleHeight(20),
-          }}
-        >
-          <View style={{ flex: 1, height: 1, backgroundColor: '#ccc' }} />
-          <Text
-            style={{
-              marginHorizontal: scaleWidth(12),
-              color: '#666',
-              fontSize: scaleFont(13),
-            }}
-          >
-            또는
-          </Text>
-          <View style={{ flex: 1, height: 1, backgroundColor: '#ccc' }} />
-        </View>
-
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            gap: scaleWidth(36),
-            marginBottom: scaleHeight(24),
-          }}
-        >
-          <TouchableOpacity
-            style={{
-              width: scaleWidth(52),
-              height: scaleWidth(52),
-              borderRadius: scaleWidth(104),
-              borderWidth: 1,
-              borderColor: '#ccc',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Ionicons name="logo-google" size={scaleFont(24)} color="#555" />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={{
-              width: scaleWidth(52),
-              height: scaleWidth(52),
-              borderRadius: scaleWidth(104),
-              borderWidth: 1,
-              borderColor: '#ccc',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Ionicons name="logo-apple" size={scaleFont(24)} color="#555" />
-          </TouchableOpacity>
-        </View>
-
-        <ThinText>소셜 계정으로 ACHIVA에 로그인 하세요</ThinText>
       </View>
     </ScreenContainer>
   );

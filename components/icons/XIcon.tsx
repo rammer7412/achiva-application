@@ -13,7 +13,7 @@ export default function XIcon({ focused }: Props) {
     <Svg
       width={scaleWidth(36)}
       height={scaleHeight(36)}
-      viewBox="0 0 32 32"
+      viewBox="0 0 36 36"
       fill="none"
     >
       <Path

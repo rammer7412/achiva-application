@@ -30,7 +30,7 @@ function ProfileTabAvatar({ size, focused }: { size: number; focused: boolean })
         height: size,
         borderRadius: size / 2,
         overflow: 'hidden',
-        backgroundColor: '#DDD', // 이미지 없을 때 회색 원
+        backgroundColor: '#DDD',
         borderWidth: focused ? 2 : 1,
         borderColor: focused ? '#412A2A' : 'rgba(0,0,0,0.15)',
       }}
