@@ -1,18 +1,22 @@
 // components/screen/profile/support/SupportHeader.tsx
 import { PaddingContainer } from '@/components/containers/ScreenContainer';
 import { SimpleText } from '@/components/text/SimpleText';
+import { useAuthStore } from '@/stores/useAuthStore';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 type Props = {
   userName: string;
+  isSelf?: boolean;
+  memberId?: number;
   onClose: () => void;
 };
 
-export default function SupportHeader({ userName, onClose }: Props) {
+export default function SupportHeader({ userName='ACHIVA_123', isSelf=true, memberId, onClose }: Props) {
   const { scaleFont, scaleHeight, scaleWidth } = useResponsiveSize();
-
+  const me = useAuthStore((s) => s.user);
+  
   return (
     <PaddingContainer>
       <View style={styles.headerRow}>

@@ -1,26 +1,46 @@
+// components/screen/profile/CategoriesArea.tsx
+import { fetchMemberProfile } from '@/api/member';
 import CategoryChip from '@/components/chips/CategoryChip';
 import { PaddingContainer } from '@/components/containers/ScreenContainer';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 
 type CategoriesAreaProps = {
   title?: string;
+  isSelf?: boolean;      // 기본 true → 내 프로필
+  memberId?: number;     // 타인 프로필일 때만 필요
 };
 
 export function CategoriesArea({
   title = '성취 카테고리',
+  isSelf = true,
+  memberId,
 }: CategoriesAreaProps) {
   const { scaleWidth, scaleHeight, scaleFont } = useResponsiveSize();
-  const categories = useAuthStore((s) => s.user?.categories ?? []);
+  const selfCategories = useAuthStore((s) => s.user?.categories ?? []);
+
+  const [otherCategories, setOtherCategories] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!isSelf && memberId) {
+      (async () => {
+        try {
+          const res = await fetchMemberProfile(memberId);
+          setOtherCategories(res.categories ?? []);
+        } catch (e) {
+          if (__DEV__) console.log('[CategoriesArea] fetch failed:', e);
+        }
+      })();
+    }
+  }, [isSelf, memberId]);
+
+  const categories = isSelf ? selfCategories : otherCategories;
+
   return (
     <PaddingContainer>
-      <View
-        style={{
-          paddingBottom: scaleHeight(12),
-        }}
-      >
+      <View style={{ paddingBottom: scaleHeight(12) }}>
         {/* 제목 */}
         <Text
           style={{
@@ -50,5 +70,3 @@ export function CategoriesArea({
     </PaddingContainer>
   );
 }
-
-

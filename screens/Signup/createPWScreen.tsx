@@ -21,8 +21,10 @@ export default function CreatePWScreen() {
   } = useUserSignupStore();
 
   const isValidPassword = (pw: string): boolean => {
-    return pw.length >= 8;
+    const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,20}$/;
+    return regex.test(pw);
   };
+
 
   const handlePress = () => {
     if (!isValidPassword(password)) {
@@ -77,7 +79,7 @@ export default function CreatePWScreen() {
             <ConfirmButton
               text="다음"
               onPress={handlePress}
-              disabled={password.trim().length < 8}
+              disabled={!isValidPassword(password)}
             />
           </View>
         </View>

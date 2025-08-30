@@ -5,6 +5,7 @@ export default function ProfileStackLayout() {
     <Stack initialRouteName="index" screenOptions={{ headerShown: false, animation: 'fade' }}>
       <Stack.Screen name="index" options={{ headerShown: false, animation: 'none' }} />
       <Stack.Screen name="profileedit" options={{ headerShown: false, animation: 'none' }} />
+      <Stack.Screen name="[id]" options={{ headerShown: false, animation: 'none' }} />
     </Stack>
   );
 }

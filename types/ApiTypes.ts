@@ -39,6 +39,20 @@ export type LoginUser = {
   createdAt: string;        // ISO
 };
 
+export type Member = {
+  id: number;
+  email: string;
+  nickName: string;
+  birth: string;            // "2000-01-01"
+  gender: 'MALE' | 'FEMALE' | string;
+  categories?: string[];    // ["공부", "운동"] 등
+  profileImageUrl?: string;
+  description: string;
+  region: string;
+  role?: string;
+  createdAt: string;        // ISO
+};
+
 export type Article = {
   id: number;
   photoUrl: string;
@@ -141,3 +155,5 @@ export type CreateArticleRequest = {
   question: QA[];
   backgroundColor: string;
 };
+
+export type SupportButtonStat = { key: CategoryKey; label: string; points: number; count: number };

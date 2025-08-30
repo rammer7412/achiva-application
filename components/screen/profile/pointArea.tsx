@@ -1,8 +1,10 @@
+import { fetchMemberProfile } from '@/api/member';
 import { PaddingContainer } from '@/components/containers/ScreenContainer';
 import SupportHistorySheetContainer from '@/components/containers/SupportHistorySheetContainer';
 import { BronzeBadge, SilverBadge } from '@/components/icons/Badge';
+import { useAuthStore } from '@/stores/useAuthStore';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
 type Tone = 'silver' | 'bronze';
@@ -39,19 +41,13 @@ export function PointBox({
       : { pillBg: '#F2EEE3', pillText: '#8A7A5D', ripple: 'rgba(138,122,93,0.12)' };
 
   return (
-    <View
-      style={[
-        styles.cardShadow,
-        { borderRadius: CARD_RADIUS },
-        style,
-      ]}
-    >
+    <View style={[styles.cardShadow, { borderRadius: CARD_RADIUS }, style]}>
       <Pressable
         onPress={onPress}
         disabled={disabled}
         accessibilityRole="button"
         android_ripple={{ color: palette.ripple }}
-        style={({ pressed }) => ([
+        style={({ pressed }) => [
           styles.cardInner,
           {
             borderRadius: CARD_RADIUS,
@@ -59,7 +55,7 @@ export function PointBox({
             paddingHorizontal: scaleWidth(22),
             opacity: pressed ? 0.98 : 1,
           },
-        ])}
+        ]}
       >
         <View style={{ alignItems: 'center', gap: GAP }}>
           {tone === 'bronze' ? (
@@ -95,9 +91,32 @@ export function PointBox({
   );
 }
 
-export function PointArea() {
+type PointAreaProps = {
+  isSelf?: boolean;
+  memberId? : number;
+};
+
+export function PointArea({ isSelf = true, memberId }: PointAreaProps) {
   const { scaleWidth, scaleHeight } = useResponsiveSize();
   const [sheetOpen, setSheetOpen] = React.useState<false | 'received' | 'sent'>(false);
+
+  const selfUser = useAuthStore((s) => s.user);
+  const [otherUserName, setOtherUserName] = useState<string>('');
+
+  useEffect(() => {
+    if (!isSelf && memberId) {
+      (async () => {
+        try {
+          const res = await fetchMemberProfile(memberId);
+          setOtherUserName(res.nickName ?? '');
+        } catch (e) {
+          if (__DEV__) console.log('[PointArea] fetch failed:', e);
+        }
+      })();
+    }
+  }, [isSelf, memberId]);
+
+  const userName = isSelf ? selfUser?.nickName ?? '' : otherUserName;
 
   const GAP = scaleWidth(14);
   const CARD_HEIGHT = scaleHeight(185);
@@ -126,8 +145,9 @@ export function PointArea() {
       <SupportHistorySheetContainer
         visible={!!sheetOpen}
         onClose={() => setSheetOpen(false)}
-        userName="Achiva_123"
+        userName={userName}
         variant={sheetOpen === 'sent' ? 'sent' : 'received'}
+        memberId={memberId}
       />
     </PaddingContainer>
   );

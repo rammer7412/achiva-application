@@ -1,8 +1,8 @@
-import { myArticles } from '@/api/article';
+import { myArticles, userArticles } from '@/api/article';
 import type { Article, SortOption } from '@/types/ApiTypes';
 import { useCallback, useEffect, useState } from 'react';
 
-export function useMyArticles(sort: SortOption) {
+export function useMyArticles(sort: SortOption, memberId?: number) {
   const [page, setPage] = useState(0);
   const [items, setItems] = useState<Article[]>([]);
   const [total, setTotal] = useState(0);
@@ -10,20 +10,28 @@ export function useMyArticles(sort: SortOption) {
   const [loadingMore, setLoadingMore] = useState(false);
   const [isLast, setIsLast] = useState(false);
 
-  const load = useCallback(async (p: number, mode: 'refresh' | 'more' = 'refresh') => {
-    mode === 'refresh' ? setLoadingFirst(true) : setLoadingMore(true);
-    try {
-      const res = await myArticles({ page: p, size: 12, sort });
-      setItems(prev => (mode === 'refresh' ? res.content : [...prev, ...res.content]));
-      setTotal(res.totalElements ?? res.numberOfElements ?? 0);
-      setIsLast(res.last);
-      setPage(res.number);
-    } finally {
-      mode === 'refresh' ? setLoadingFirst(false) : setLoadingMore(false);
-    }
-  }, [sort]);
+  const load = useCallback(
+    async (p: number, mode: 'refresh' | 'more' = 'refresh') => {
+      mode === 'refresh' ? setLoadingFirst(true) : setLoadingMore(true);
+      try {
+        const res = memberId
+          ? await userArticles(memberId, { page: p, size: 12, sort })
+          : await myArticles({ page: p, size: 12, sort });
 
-  useEffect(() => { load(0, 'refresh'); }, [sort, load]);
+        setItems((prev) => (mode === 'refresh' ? res.content : [...prev, ...res.content]));
+        setTotal(res.totalElements ?? res.numberOfElements ?? 0);
+        setIsLast(res.last);
+        setPage(res.number);
+      } finally {
+        mode === 'refresh' ? setLoadingFirst(false) : setLoadingMore(false);
+      }
+    },
+    [sort, memberId],
+  );
+
+  useEffect(() => {
+    load(0, 'refresh');
+  }, [sort, memberId, load]);
 
   const loadMore = useCallback(() => {
     if (!loadingMore && !isLast) load(page + 1, 'more');

@@ -1,8 +1,8 @@
-// components/screen/profile/SupportHistorySheet.tsx
+import { SupportButtonStat } from '@/types/ApiTypes';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import React from 'react';
 import { ScrollView, View } from 'react-native';
-import SupportButtonsCard, { ButtonStat } from './support/SupportButtonsCard';
+import SupportButtonsCard from './support/SupportButtonsCard';
 import SupportHeader from './support/SupportHeader';
 import SupportPointsSummary from './support/SupportPointsSummary';
 import SupportSectionTitle from './support/SupportSectionTitle';
@@ -15,7 +15,7 @@ type Props = {
   onClose: () => void;
   userName: string;
   totalPoints?: number;
-  buttonStats?: ButtonStat[];
+  buttonStats?: SupportButtonStat[];
   variant: Variant; 
 };
 

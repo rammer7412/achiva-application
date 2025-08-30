@@ -15,7 +15,7 @@ export async function myArticles(params?: ArticlesParams) {
   );
 
   if (!res?.data?.data) {
-    throw new Error('Invalid response');  // 반환이 없으면 예외로 처리
+    throw new Error('Invalid response');
   }
   return res.data.data;
 }
@@ -76,5 +76,3 @@ export async function HomeArticles(params?: ArticlesParams) {
   }
   return res.data;
 }
-
-

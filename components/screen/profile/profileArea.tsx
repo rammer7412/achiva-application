@@ -1,14 +1,18 @@
+import { fetchMemberProfile } from '@/api/member';
 import { PaddingContainer } from '@/components/containers/ScreenContainer';
 import EmptyProfileIcon from '@/components/icons/EmptyProfileIcon';
 import GearSixIcon from '@/components/icons/GearSixIcon';
 import { SimpleText } from '@/components/text/SimpleText';
 import { useAuthStore } from '@/stores/useAuthStore';
+import type { Member } from '@/types/ApiTypes';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import React from 'react';
 
 import { Image, StyleSheet, View } from 'react-native';
 
 type ProfileBoxProps = {
+  isSelf?: boolean;
+  memberId?: number;
   button?: React.ReactNode;
 };
 
@@ -23,27 +27,42 @@ export function ProfileHeader() {
   );
 }
 
-export function ProfileBox({ button }: ProfileBoxProps) {
-  const user = useAuthStore((s) => s.user);
+export function ProfileBox({ isSelf = true, memberId, button }: ProfileBoxProps) {
   const { scaleWidth, scaleHeight } = useResponsiveSize();
+  const me = useAuthStore((s) => s.user);
 
-  const userName = user?.nickName ?? '';
-  const desc = user?.description ?? '나를 소개하는 한 줄을 적었을 때';
-  const imgUrl = user?.profileImageUrl ?? null;
+  const [other, setOther] = React.useState<Member | null>(null);
+
+  // 타인 프로필 조회
+  React.useEffect(() => {
+    if (isSelf || !memberId) return;
+    let mounted = true;
+    (async () => {
+      try {
+        const data = await fetchMemberProfile(memberId);
+
+        if (mounted) setOther(data);
+      } catch (e) {
+        if (__DEV__) console.log('[ProfileBox] fetchMemberProfile error:', e);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [isSelf, memberId]);
+
+  const userName = isSelf ? me?.nickName ?? '' : other?.nickName ?? '';
+  const desc = isSelf
+    ? me?.description ?? '나를 소개하는 한 줄을 적었을 때'
+    : (other as any)?.description ?? '';
+  const imgUrl = isSelf ? me?.profileImageUrl ?? null : other?.profileImageUrl ?? null;
 
   const AVATAR_SIZE = 96;
   const profileSize = scaleWidth(AVATAR_SIZE);
 
   return (
     <PaddingContainer>
-      <View
-        style={[
-          styles.row,
-          {
-            paddingBottom: scaleHeight(12),
-          },
-        ]}
-      >
+      <View style={[styles.row, { paddingBottom: scaleHeight(12) }]}>
         {imgUrl ? (
           <Image
             source={{ uri: imgUrl }}
@@ -82,13 +101,12 @@ export function ProfileBox({ button }: ProfileBoxProps) {
               {desc}
             </SimpleText>
           )}
-          
-          {button ? (
+
+          {isSelf && button ? (
             <View style={{ marginTop: scaleHeight(10), alignSelf: 'flex-start' }}>
               {button}
             </View>
           ) : null}
-          
         </View>
       </View>
     </PaddingContainer>
@@ -96,7 +114,5 @@ export function ProfileBox({ button }: ProfileBoxProps) {
 }
 
 const styles = StyleSheet.create({
-  row: { 
-    flexDirection: 'row', 
-    alignItems: 'center',},
+  row: { flexDirection: 'row', alignItems: 'center' },
 });

@@ -2,6 +2,7 @@
 import type { Article, Question } from '@/types/ApiTypes';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import {
   FlatList,
@@ -68,6 +69,7 @@ export default function ArticleFrame({ item, onPressMenu }: Props) {
   const { smartScale, scaleHeight, scaleWidth } = useResponsiveSize();
   const styles = useStyles();
 
+  const router = useRouter();
   const [listWidth, setListWidth] = React.useState(0);
   const hasAvatar = !!item.memberProfileUrl;
 
@@ -84,6 +86,11 @@ export default function ArticleFrame({ item, onPressMenu }: Props) {
     const w = e.nativeEvent.layout.width;
     if (w && w !== listWidth) setListWidth(w);
   };
+
+  const goProfile = React.useCallback(() => {
+    // 라우트 규칙 예: /profile/[id].tsx
+    router.push({ pathname: '/profile/[id]', params: { id: String(item.memberId) } } as any);
+  }, [router, item.memberId]);
 
   const renderCard: ListRenderItem<PageItem> = ({ item: page, index }) => (
     <View style={{ width: listWidth || 0, aspectRatio: 1 }}>
@@ -102,22 +109,25 @@ export default function ArticleFrame({ item, onPressMenu }: Props) {
     <View style={styles.wrapper}>
       <View style={styles.headerRow}>
         <View style={styles.profileRow}>
-          {hasAvatar && (
-            <Image
-              source={{ uri: item.memberProfileUrl }}
-              style={[
-                styles.avatar,
-                {
-                  width: scaleWidth(32),
-                  height: scaleWidth(32),
-                  borderRadius: scaleWidth(16),
-                },
-              ]}
-            />
-          )}
-          <Text style={styles.nickname}>{item.memberNickName}</Text>
-          <View style={{ marginHorizontal: scaleWidth(8) }} />
-          <Text style={styles.timeInline}>{timeAgo(item.createdAt)}</Text>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={goProfile}
+            style={styles.profileRow}
+            hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+          >
+            {hasAvatar && (
+              <Image
+                source={{ uri: item.memberProfileUrl }}
+                style={[
+                  styles.avatar,
+                  { width: scaleWidth(32), height: scaleWidth(32), borderRadius: scaleWidth(16) },
+                ]}
+              />
+            )}
+            <Text style={styles.nickname}>{item.memberNickName}</Text>
+            <View style={{ marginHorizontal: scaleWidth(8) }} />
+            <Text style={styles.timeInline}>{timeAgo(item.createdAt)}</Text>
+          </TouchableOpacity>
         </View>
 
         <TouchableOpacity

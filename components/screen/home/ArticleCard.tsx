@@ -63,9 +63,9 @@ export default function ArticleCard({
   // ─ 1) 대표(첫) 페이지: 이미지 + 오버레이 + 날짜/제목/카테고리
   if (mode === 'title') {
     const HeaderBody = (
-      <>
+      <View style={{flex:1, justifyContent: 'center'}}>
         <Text
-          style={[styles.date, { fontSize: scaleFont(16), marginBottom: scaleHeight(12) }]}
+          style={[styles.date, { fontSize: scaleFont(32), marginBottom: scaleHeight(8) }]}
           numberOfLines={1}
         >
           {formatDotDate(item.createdAt)}
@@ -74,17 +74,18 @@ export default function ArticleCard({
         <Text
           style={[
             styles.bigTitle,
-            { fontSize: scaleFont(32), lineHeight: scaleHeight(40), marginBottom: scaleHeight(18) },
+            { fontSize: scaleFont(64), marginBottom: scaleHeight(48) },
           ]}
           numberOfLines={2}
         >
           {item.title}
         </Text>
 
-        <Text style={[styles.sub, { fontSize: scaleFont(20), lineHeight: scaleHeight(28) }]} numberOfLines={2}>
-          <Text style={styles.subEm}>{item.category}</Text> 기록{'\n'}{item.authorCategorySeq}번째 이야기
+        <Text style={[styles.sub, { fontSize: scaleFont(48)}]} numberOfLines={2}>
+          <Text style={styles.subEm}>{item.category}</Text> 기록{'\n'}
+          <Text style={styles.subEm}>{item.authorCategorySeq}번째</Text> 이야기
         </Text>
-      </>
+      </View>
     );
 
     if (item.photoUrl) {
@@ -95,9 +96,10 @@ export default function ArticleCard({
           style={[styles.cardBase, { borderRadius: radius, backgroundColor: item.backgroundColor || '#000' }, style]}
           imageStyle={{ borderRadius: radius }}
         >
-          <View style={[styles.dim, { backgroundColor: 'rgba(0,0,0,0.35)' }]} />
-          <View style={{ paddingHorizontal: padH, paddingVertical: padV, minHeight: minH, justifyContent: 'center' }}>
-            {HeaderBody}
+          <View style={[styles.dim, { backgroundColor: 'rgba(0,0,0,0.35)', justifyContent: 'center' }]}>
+            <View style={{ paddingHorizontal: padH, paddingVertical: padV, minHeight: minH, justifyContent: 'center' }}>
+              {HeaderBody}
+            </View>
           </View>
           <PageBadge />
         </ImageBackground>
@@ -177,12 +179,12 @@ const styles = StyleSheet.create({
 
   // 타이틀 페이지 텍스트
   date: { color: 'rgba(255,255,255,0.8)', fontFamily: 'Pretendard-Medium' },
-  bigTitle: { color: 'rgba(255,255,255,0.9)', fontFamily: 'Pretendard-ExtraBold' },
+  bigTitle: { color: 'rgba(255,255,255,0.9)', fontFamily: 'Pretendard-Bold' },
   sub: { color: 'white', fontFamily: 'Pretendard-Medium' },
-  subEm: { fontFamily: 'Pretendard-ExtraBold', color: 'white' },
+  subEm: { fontFamily: 'Pretendard-Bold', color: 'white', fontWeight:'500' },
 
   // 질문 페이지 텍스트
-  q: { color: '#111', fontFamily: 'Pretendard-ExtraBold' },
+  q: { color: '#111', fontFamily: 'Pretendard-ExtraBold'},
   c: { color: '#333', fontFamily: 'Pretendard-Medium' },
 
   // 페이지 뱃지
