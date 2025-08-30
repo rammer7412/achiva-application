@@ -52,7 +52,7 @@ export default function OtherProfileScreen() {
       onRefresh={onRefresh}
     >
 
-      <ProfileHeader/>
+      <ProfileHeader isSelf={false}/>
 
       <ProfileBox isSelf={false} memberId={memberId} />
 

@@ -1,5 +1,6 @@
 import { fetchMemberProfile } from '@/api/member';
 import { PaddingContainer } from '@/components/containers/ScreenContainer';
+import { BackHeader } from '@/components/header/BackHeader';
 import EmptyProfileIcon from '@/components/icons/EmptyProfileIcon';
 import GearSixIcon from '@/components/icons/GearSixIcon';
 import { SimpleText } from '@/components/text/SimpleText';
@@ -16,13 +17,15 @@ type ProfileBoxProps = {
   button?: React.ReactNode;
 };
 
-export function ProfileHeader() {
+type Props = {
+  isSelf?: boolean;
+};
+
+export function ProfileHeader({isSelf=true} : Props) {
   const { scaleWidth } = useResponsiveSize();
   return (
-    <PaddingContainer>
-      <View style={{marginTop: scaleWidth(10), width: '100%', flexDirection: 'row', justifyContent: 'flex-end' }}>
-        <GearSixIcon focused={false} />
-      </View>
+    <PaddingContainer>  
+        {isSelf ? <View style={{marginTop: scaleWidth(10), width: '100%', flexDirection: 'row', justifyContent: 'flex-end' }}><GearSixIcon focused={false} /></View> : <BackHeader />}
     </PaddingContainer>
   );
 }
