@@ -1,14 +1,16 @@
-// components/screen/home/ArticleFrame.tsx
 import type { Article, Question } from '@/types/ApiTypes';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
+  Animated,
   FlatList,
   Image,
   LayoutChangeEvent,
   ListRenderItem,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -16,6 +18,7 @@ import {
 } from 'react-native';
 import ActionBar from './ActionBar';
 import ArticleCard from './ArticleCard';
+import FixedPageBadge from './FixedPageBadge';
 
 type Props = {
   item: Article;
@@ -24,10 +27,8 @@ type Props = {
 
 function timeAgo(iso: string) {
   const t = new Date(iso).getTime();
-
   // UTC → KST(+9h)
   const kstTime = t + 9 * 60 * 60 * 1000;
-
   const diff = Math.max(0, Date.now() - kstTime);
   const m = Math.floor(diff / 60000);
   if (m < 60) return `${m}m`;
@@ -40,7 +41,7 @@ function timeAgo(iso: string) {
 type PageItem =
   | { type: 'title' }
   | { type: 'question'; data: Question }
-  | { type: 'image' }; // 마지막 이미지 전용 페이지
+  | { type: 'image' };
 
 function useStyles() {
   const { scaleWidth, scaleHeight, scaleFont } = useResponsiveSize();
@@ -57,7 +58,6 @@ function useStyles() {
         profileRow: { flexDirection: 'row', alignItems: 'center' },
         avatar: { backgroundColor: '#DDD', marginRight: scaleWidth(8) },
         nickname: { color: '#3E3E3E', fontWeight: '700', fontSize: scaleFont(14) },
-        dot: { color: '#9E9E9E', marginHorizontal: scaleWidth(6), fontSize: scaleFont(12) },
         timeInline: { color: '#9E9E9E', fontSize: scaleFont(12) },
         menuButton: { paddingLeft: scaleWidth(8), paddingVertical: scaleHeight(4) },
       }),
@@ -68,19 +68,33 @@ function useStyles() {
 export default function ArticleFrame({ item, onPressMenu }: Props) {
   const { smartScale, scaleHeight, scaleWidth } = useResponsiveSize();
   const styles = useStyles();
-
   const router = useRouter();
+
   const [listWidth, setListWidth] = React.useState(0);
+  const [currentIndex, setCurrentIndex] = React.useState(0);
   const hasAvatar = !!item.memberProfileUrl;
 
-  // [대표타이틀, ...질문배열, 이미지전용(마지막)]
-  const pages = React.useMemo<PageItem[]>(() => {
-    const qPages: PageItem[] = (item.question ?? []).map((q) => ({
-      type: 'question',
-      data: q,
-    }));
-    return [{ type: 'title' }, ...qPages, { type: 'image' }];
-  }, [item]);
+  const badgeOpacity = React.useRef(new Animated.Value(0)).current;
+  const hideTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showBadge = React.useCallback((visibleMs = 1400) => {
+    if (hideTimerRef.current) {
+      clearTimeout(hideTimerRef.current);
+      hideTimerRef.current = null;
+    }
+    Animated.timing(badgeOpacity, { toValue: 1, duration: 140, useNativeDriver: true }).start();
+
+    hideTimerRef.current = setTimeout(() => {
+      Animated.timing(badgeOpacity, { toValue: 0, duration: 180, useNativeDriver: true }).start();
+      hideTimerRef.current = null;
+    }, visibleMs);
+  }, [badgeOpacity]);
+
+  React.useEffect(() => {
+    return () => {
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    };
+  }, []);
 
   const onListLayout = (e: LayoutChangeEvent) => {
     const w = e.nativeEvent.layout.width;
@@ -88,12 +102,60 @@ export default function ArticleFrame({ item, onPressMenu }: Props) {
   };
 
   const goProfile = React.useCallback(() => {
-    // 라우트 규칙 예: /profile/[id].tsx
     router.push({ pathname: '/profile/[id]', params: { id: String(item.memberId) } } as any);
   }, [router, item.memberId]);
 
+  const onScrollBeginDrag = React.useCallback(() => {
+    showBadge(); // 드래그 시작 시 표시
+  }, [showBadge]);
+
+  const onMomentumScrollEnd = React.useCallback(
+    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const x = e.nativeEvent.contentOffset.x;
+      const w = e.nativeEvent.layoutMeasurement.width;
+      const idx = Math.round(x / Math.max(1, w));
+      setCurrentIndex(Math.max(0, Math.min(idx, pages.length - 1)));
+      showBadge();
+    },
+    [showBadge],
+  );
+
+  const lastScrollShowRef = React.useRef(0);
+  const onScroll = React.useCallback(() => {
+    const now = Date.now();
+    if (now - lastScrollShowRef.current > 200) {
+      lastScrollShowRef.current = now;
+      showBadge();
+    }
+  }, [showBadge]);
+
+  const onTouchStart = React.useCallback(() => {
+    showBadge();
+  }, [showBadge]);
+
+  const pages = React.useMemo<PageItem[]>(() => {
+    const qPages: PageItem[] = (item.question ?? []).map((q) => ({ type: 'question', data: q }));
+    return [{ type: 'title' }, ...qPages, { type: 'image' }];
+  }, [item]);
+
+  const pagesLenRef = React.useRef(pages.length);
+  React.useEffect(() => {
+    pagesLenRef.current = pages.length;
+  }, [pages.length]);
+
+  const onMomentumScrollEndSafe = React.useCallback(
+    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const x = e.nativeEvent.contentOffset.x;
+      const w = e.nativeEvent.layoutMeasurement.width;
+      const idx = Math.round(x / Math.max(1, w));
+      setCurrentIndex(Math.max(0, Math.min(idx, pagesLenRef.current - 1)));
+      showBadge();
+    },
+    [showBadge],
+  );
+
   const renderCard: ListRenderItem<PageItem> = ({ item: page, index }) => (
-    <View style={{ width: listWidth || 0, aspectRatio: 1 }}>
+    <View style={{ width: listWidth || 0, height: listWidth || 0 }}>
       <ArticleCard
         item={item}
         index={index}
@@ -136,16 +198,20 @@ export default function ArticleFrame({ item, onPressMenu }: Props) {
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           style={styles.menuButton}
         >
-          <Ionicons
-            name="ellipsis-horizontal"
-            size={smartScale(18, 22)}
-            color="#9E9E9E"
-          />
+          <Ionicons name="ellipsis-horizontal" size={smartScale(18, 22)} color="#9E9E9E" />
         </TouchableOpacity>
       </View>
 
-      {/* 본문: 가로 스와이프(정사각형, 옆카드 미노출) */}
-      <View onLayout={onListLayout}>
+      <View
+        onLayout={onListLayout}
+        onTouchStart={onTouchStart}
+        style={{
+          width: '100%',
+          height: listWidth || undefined,
+          aspectRatio: listWidth ? undefined : 1,
+          position: 'relative', // 오버레이 기준
+        }}
+      >
         <FlatList<PageItem>
           horizontal
           pagingEnabled
@@ -156,13 +222,22 @@ export default function ArticleFrame({ item, onPressMenu }: Props) {
           renderItem={renderCard}
           keyExtractor={(_, idx) => String(idx)}
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{}}
+          onScrollBeginDrag={onScrollBeginDrag}
+          onMomentumScrollEnd={onMomentumScrollEndSafe}
+          onScroll={onScroll}
+          scrollEventThrottle={16}
         />
+
+        <Animated.View
+          pointerEvents="none"
+          style={[StyleSheet.absoluteFillObject, { opacity: badgeOpacity }]}
+        >
+          <FixedPageBadge index={currentIndex} total={pages.length} />
+        </Animated.View>
       </View>
 
-      {/* 액션 바 */}
       <View style={{ marginTop: scaleHeight(10) }}>
-        <ActionBar articleId={item.id}/>
+        <ActionBar articleId={item.id} />
       </View>
     </View>
   );

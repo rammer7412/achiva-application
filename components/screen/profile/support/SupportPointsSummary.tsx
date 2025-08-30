@@ -1,10 +1,9 @@
-// components/screen/profile/support/SupportPointsSummary.tsx
 import { PaddingContainer } from '@/components/containers/ScreenContainer';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import React from 'react';
 import { Text, View } from 'react-native';
 
-type Props = { points: number }; // API 연결 예정
+type Props = { points: number };
 
 export default function SupportPointsSummary({ points }: Props) {
   const { scaleFont, scaleHeight } = useResponsiveSize();

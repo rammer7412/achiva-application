@@ -1,4 +1,3 @@
-// components/screen/profile/support/SupportButtonsCard.tsx
 import { PaddingContainer } from '@/components/containers/ScreenContainer';
 import { SupportButtonStat } from '@/types/ApiTypes';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';

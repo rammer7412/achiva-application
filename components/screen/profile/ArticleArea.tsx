@@ -23,13 +23,11 @@ import ArticleHeader from './ArticleHeader';
 
 export type ArticleAreaHandle = {
   onParentScroll: (e: NativeSyntheticEvent<NativeScrollEvent>) => void;
-  /** 선택적으로 memberId를 넘길 수 있도록 확장(현재 구현은 prop 기반이라 인자 없이 호출해도 됨) */
   refresh: (targetMemberId?: number) => Promise<void>;
 };
 
 type Props = {
   onPressItem?: (item: Article) => void;
-  /** 타인 프로필에서 사용: 해당 멤버의 게시글을 로드 */
   isSelf?: boolean;
   memberId?: number;
 };
@@ -67,8 +65,7 @@ const ArticleArea = forwardRef<ArticleAreaHandle, Props>(function ArticleArea(
       onParentScroll: (e) => {
         if (isCloseToBottom(e) && !loadingMore && !isLast) loadMore();
       },
-      // targetMemberId 인자는 현재 구현에선 사용하지 않아도 OK.
-      // prop 변경으로 멤버가 바뀌면 컴포넌트가 리렌더/재요청됨.
+
       refresh: async () => {
         await refresh();
       },

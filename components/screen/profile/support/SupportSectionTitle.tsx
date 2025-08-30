@@ -1,4 +1,3 @@
-// components/screen/profile/support/SupportSectionTitle.tsx
 import { PaddingContainer } from '@/components/containers/ScreenContainer';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import React from 'react';

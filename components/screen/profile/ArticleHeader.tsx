@@ -29,21 +29,18 @@ export default function ArticleHeader({ total, sort, onChangeSort }: Props) {
         },
       ]}
     >
-      {/* 왼쪽: 옅은 회색 텍스트 */}
       <Text
         style={[
           styles.count,
           {
             fontSize: scaleFont(14),
-            // Pretendard 쓰면 폰트패밀리 지정 가능
-            // fontFamily: 'Pretendard-Medium',
+            fontFamily: 'Pretendard-Medium',
           },
         ]}
       >
         게시글 {total}
       </Text>
 
-      {/* 오른쪽: 최신순 ▾ (배경 없이 텍스트+아이콘만) */}
       <TouchableOpacity
         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         style={styles.sortRow}
@@ -55,7 +52,6 @@ export default function ArticleHeader({ total, sort, onChangeSort }: Props) {
             styles.sortText,
             {
               fontSize: scaleFont(13),
-              // fontFamily: 'Pretendard-ExtraBold',
             },
           ]}
         >
@@ -69,7 +65,6 @@ export default function ArticleHeader({ total, sort, onChangeSort }: Props) {
         />
       </TouchableOpacity>
 
-      {/* 정렬 모달 */}
       <Modal visible={open} transparent animationType="fade" onRequestClose={() => setOpen(false)}>
         <Pressable style={styles.backdrop} onPress={() => setOpen(false)}>
           <View style={[styles.menu]}>
@@ -101,20 +96,17 @@ export default function ArticleHeader({ total, sort, onChangeSort }: Props) {
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
-    alignItems: 'flex-end',      // 스샷처럼 베이스라인 가깝게
+    alignItems: 'flex-end',
     justifyContent: 'space-between',
   },
-  // 스샷의 옅은 회색 (따뜻한 톤)
   count: {
     color: '#B7B0AC',
     letterSpacing: -0.2,
   },
-  // 오른쪽 정렬 텍스트 (더 진한 톤)
   sortText: {
     color: '#2B1E19',
     letterSpacing: -0.2,
   },
-  // pill 제거 → 투명
   sortRow: {
     flexDirection: 'row',
     alignItems: 'center',

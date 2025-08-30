@@ -36,7 +36,6 @@ export function ProfileBox({ isSelf = true, memberId, button }: ProfileBoxProps)
 
   const [other, setOther] = React.useState<Member | null>(null);
 
-  // 타인 프로필 조회
   React.useEffect(() => {
     if (isSelf || !memberId) return;
     let mounted = true;

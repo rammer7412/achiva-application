@@ -21,21 +21,14 @@ import type { CategoryKeyKr, CreateCheeringPayload } from '@/types/ApiTypes';
 import type { Cheering } from '@/types/Response';
 
 type Props = {
-  actions?: CategoryKeyKr[]; // 한국어 라벨
+  actions?: CategoryKeyKr[];
   style?: ViewStyle;
-  /** (label, isOn) */
   onPressAction?: (label: CategoryKeyKr, isOn: boolean) => void;
-  /** 최초에 켜둘 라벨들 */
   initialSelected?: CategoryKeyKr[];
-  /** 최초 응원 객체(삭제를 위해 id까지 전달하고 싶을 때) */
   initialCheerings?: Partial<Record<CategoryKeyKr, Cheering>>;
-  /** 대상 게시글 ID */
   articleId: number;
-  /** 생성 성공 시 콜백 */
   onCheeringCreated?: (cheering: Cheering, label: CategoryKeyKr) => void;
-  /** 삭제 성공 시 콜백 */
   onCheeringDeleted?: (label: CategoryKeyKr) => void;
-  /** 라벨별 커스텀 content(미지정 시 라벨 그대로 전송) */
   contentMap?: Partial<Record<CategoryKeyKr, string>>;
 };
 
@@ -66,12 +59,10 @@ export default function ActionBar({
     () => new Set(initialSelected),
   );
 
-  // 버튼별 진행 중 보호
   const [pendingSet, setPendingSet] = React.useState<Set<CategoryKeyKr>>(
     () => new Set(),
   );
 
-  // 라벨 -> Cheering 객체(삭제용 id 저장)
   const [cheeringMap, setCheeringMap] = React.useState<Map<CategoryKeyKr, Cheering>>(
     () => {
       const m = new Map<CategoryKeyKr, Cheering>();
@@ -132,7 +123,6 @@ export default function ActionBar({
 
     const isCurrentlyOn = selectedSet.has(label);
 
-    // Optimistic 토글
     setSelectedSet((prev) => {
       const next = new Set(prev);
       if (isCurrentlyOn) next.delete(label);
@@ -145,10 +135,9 @@ export default function ActionBar({
       setPendingSet((p) => new Set(p).add(label));
 
       if (!isCurrentlyOn) {
-        // ON → 응원 생성
         const payload: CreateCheeringPayload = {
           content: (contentMap?.[label] ?? label).trim(),
-          cheeringCategory: label, // 한국어 그대로
+          cheeringCategory: label,
         };
         const cheering = await createCheering(articleId, payload);
         setCheeringMap((prev) => {
@@ -158,10 +147,8 @@ export default function ActionBar({
         });
         onCheeringCreated?.(cheering, label);
       } else {
-        // OFF → 응원 삭제
         const cheering = cheeringMap.get(label);
         if (!cheering?.id) {
-          // 초기 상태에서 id를 모르면 삭제 불가 → 안내
           throw new Error('NO_CHEERING_ID');
         }
         await deleteCheering(articleId, cheering.id);
@@ -173,7 +160,6 @@ export default function ActionBar({
         onCheeringDeleted?.(label);
       }
     } catch (e: any) {
-      // 실패 → 상태 롤백
       setSelectedSet((prev) => {
         const next = new Set(prev);
         if (isCurrentlyOn) next.add(label);

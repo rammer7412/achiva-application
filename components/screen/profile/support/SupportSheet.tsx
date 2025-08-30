@@ -1,4 +1,3 @@
-// components/screen/profile/support/SupportSheet.tsx
 import React from 'react';
 import { Modal, Pressable, StyleSheet, View, ViewStyle } from 'react-native';
 
