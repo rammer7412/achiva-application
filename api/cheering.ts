@@ -31,11 +31,11 @@ export async function createCheering(
   const url = `/api/articles/${encodeURIComponent(String(articleId))}/cheerings`;
 
   const res = await api.post<ApiBaseResponse<Cheering>>(
-    url,                       // /api/articles/{postId}/cheerings
-    body,                      // { content: cheeringType, cheeringCategory: cheeringType }
+    url,
+    body,
     {
       signal,
-      params: { articleId },   // ?articleId={postId}  ← fetch와 동일하게 쿼리도 붙임
+      params: { articleId },
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
@@ -59,7 +59,7 @@ export async function deleteCheering(
   const url = `/api/articles/${encodeURIComponent(String(articleId))}/cheerings/${encodeURIComponent(String(cheeringId))}`;
   const res = await api.delete<ApiBaseResponse<unknown>>(url, {
     signal,
-    // 서버가 쿼리 파라미터를 요구할 수 있으므로 같이 붙여줌(POST 때와 동일 스타일)
+
     params: { articleId, cheeringId },
     validateStatus: () => true,
   });

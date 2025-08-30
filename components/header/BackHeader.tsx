@@ -10,7 +10,7 @@ type Props = {
 
 export function BackHeader({ onPressBack }: Props) {
   const { scaleHeight, scaleWidth } = useResponsiveSize();
-  const router = useRouter(); // ✅ 라우터 훅
+  const router = useRouter();
 
   const hit = {
     top: scaleHeight(6),
@@ -23,7 +23,7 @@ export function BackHeader({ onPressBack }: Props) {
     if (onPressBack) {
       onPressBack();
     } else {
-      router.back(); // ✅ 기본 동작: 뒤로가기
+      router.back();
     }
   };
 

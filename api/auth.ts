@@ -1,4 +1,3 @@
-// api/auth.ts
 import type { ApiBaseResponse } from '@/types/ApiTypes';
 import { LoginRequest, LoginUser } from '@/types/ApiTypes';
 import { api } from '@/utils/apiClients';

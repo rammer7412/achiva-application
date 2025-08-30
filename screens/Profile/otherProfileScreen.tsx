@@ -15,7 +15,6 @@ export default function OtherProfileScreen() {
   const articleRef = React.useRef<ArticleAreaHandle>(null);
   const [refreshing, setRefreshing] = React.useState(false);
 
-  // 초기에 한 번 타인 프로필 프리페치 (필수는 아니지만, 상단 UI 깜빡임 줄여줌)
   React.useEffect(() => {
     if (!memberId) return;
     (async () => {

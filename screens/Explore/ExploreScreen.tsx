@@ -1,7 +1,7 @@
 import { ScreenContainer } from '@/components/containers/ScreenContainer';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 export default function HomeScreen() {
   const { scaleHeight } = useResponsiveSize();
@@ -16,7 +16,7 @@ export default function HomeScreen() {
           },
         ]}
       >
-        {/* 여기서부터 메인 콘텐츠 작성 가능 */}
+        <Text>미구현 영역</Text>
       </View>
     </ScreenContainer>
   );

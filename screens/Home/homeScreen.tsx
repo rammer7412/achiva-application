@@ -6,10 +6,10 @@ import PlusSquare from '@/components/icons/PlusSquare';
 import ACHIVALogo from '@/components/logo/ACHIVA-logo';
 import ArticleFrame from '@/components/screen/home/ArticleFrame';
 import { SimpleText } from '@/components/text/SimpleText';
+import { useAuthStore } from '@/stores/useAuthStore';
 import type { Article, PageResponse } from '@/types/ApiTypes';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
-
-import { useAuthStore } from '@/stores/useAuthStore';
+import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
@@ -24,6 +24,7 @@ type HeaderProps = { onPressLogo?: () => void };
 
 function HomeHeader({ onPressLogo }: HeaderProps) {
   const { scaleHeight, scaleWidth, scaleFont } = useResponsiveSize();
+  const router = useRouter();
   return (
     <PaddingContainer>
       <View style={{ gap: scaleHeight(15), marginTop: scaleHeight(42) }}>
@@ -34,8 +35,7 @@ function HomeHeader({ onPressLogo }: HeaderProps) {
 
         <ArticleWriteButton
           text="오늘의 새로운 이야기를 남겨주세요"
-          onPress={() => {
-          }}
+          onPress={() => {router.push('/(tab)/post')}}
           icon={<PlusSquare size={scaleWidth(18)} color="#FFFFFF" />}
         />
       </View>
@@ -54,7 +54,6 @@ function HomeHeader({ onPressLogo }: HeaderProps) {
 export default function HomeScreen() {
   const { scaleHeight, scaleWidth, scaleFont } = useResponsiveSize();
 
-  // ── 섹션1: 홈 피드(나를 응원해준 사람들) ──────────────────────────────
   const [items, setItems] = useState<Article[]>([]);
   const [page, setPage] = useState(0);
   const [size] = useState(6);
@@ -96,13 +95,13 @@ export default function HomeScreen() {
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await fetchPage(0, 'replace');
-    await fetchUFPage(0, 'replace'); // 섹션2도 같이 새로고침
+    await fetchUFPage(0, 'replace');
     setRefreshing(false);
   }, [fetchPage]);
 
   const onPressLogo = useCallback(() => {
-  if (refreshing || loadingRef.current) return; // 중복 탭 방지
-  onRefresh();                                  // 두 섹션 모두 리프레시
+  if (refreshing || loadingRef.current) return;
+  onRefresh();
 }, [onRefresh, refreshing]);
 
   const loadMore = useCallback(() => {
@@ -117,7 +116,6 @@ export default function HomeScreen() {
 
   const keyExtractor = useCallback((it: Article) => String(it.id), []);
 
-  // ── 섹션2: 관심있는 성취 카테고리 이야기(유저 피드) ──────────────────
   const memberId = useAuthStore((s) => s.user?.id ?? null);
 
   const [ufItems, setUFItems] = useState<Article[]>([]);
@@ -165,21 +163,17 @@ export default function HomeScreen() {
     fetchUFPage(ufPage + 1, 'append');
   }, [fetchUFPage, ufIsLast, ufLoading, ufPage]);
 
-  // ── Footer: 홈 로더 + 관심 카테고리 섹션 ────────────────────────────
   const Footer = useMemo(() => {
     return (
       <View style={{ paddingBottom: scaleHeight(40) }}>
-        {/* 홈 피드 로딩 표시 */}
         {loading ? (
           <View style={{ paddingVertical: scaleHeight(24) }}>
             <ActivityIndicator />
           </View>
         ) : null}
 
-        {/* 구분 여백 */}
         <View style={{ height: scaleHeight(10) }} />
 
-        {/* 섹션2 헤더 */}
         <PaddingContainer>
           <View style={{ marginTop: scaleHeight(42), marginBottom: scaleHeight(12) }}>
             <SimpleText
@@ -191,7 +185,6 @@ export default function HomeScreen() {
           </View>
         </PaddingContainer>
 
-        {/* 섹션2 콘텐츠 */}
         {ufLoadingFirst ? (
           <View style={{ paddingVertical: scaleHeight(24), alignItems: 'center' }}>
             <ActivityIndicator />
@@ -220,7 +213,7 @@ export default function HomeScreen() {
           </PaddingContainer>
         ) : (
           <View>
-            {/* 세로 리스트 - ArticleFrame 재사용 */}
+
             <View style={{ height: scaleHeight(14) }} />
               <View style={{ gap: scaleHeight(20) }}>
                 {ufItems.map((it) => (
@@ -228,7 +221,6 @@ export default function HomeScreen() {
                 ))}
               </View>
 
-            {/* 더 보기 버튼 */}
             {!ufIsLast ? (
               <PaddingContainer>
                 <View style={{ alignItems: 'center' }}>
@@ -254,7 +246,6 @@ export default function HomeScreen() {
               </PaddingContainer>
             ) : null}
 
-            {/* 섹션2 로딩 표기(더 보기 중) */}
             {ufLoading && (
               <View style={{ paddingVertical: scaleHeight(16), alignItems: 'center' }}>
                 <ActivityIndicator />
