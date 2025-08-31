@@ -1,20 +1,26 @@
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import React from 'react';
-import { StyleSheet, Text, TextStyle } from 'react-native';
+import { Image, ImageStyle, StyleSheet } from 'react-native';
 
 type Props = {
-  color?: string;
+  /** 로고 색상은 이미지라 필요없음 */
+  width?: number;
+  height?: number;
 };
 
-export default function ACHIVALogo({ color = '#FFF' }: Props) {
-  const { scaleFont } = useResponsiveSize();
+export default function ACHIVALogo({ width = 200, height = 80 }: Props) {
+  const { scaleWidth, scaleHeight } = useResponsiveSize();
 
-  return <Text style={[styles.logo, { color, fontSize: scaleFont(50) }]}>{'ACHIVA'}</Text>;
+  return (
+    <Image
+      source={require('@/assets/images/achiva-logo.png')}
+      style={[styles.logo, { width: scaleWidth(width), height: scaleHeight(height) }]}
+      resizeMode="contain"
+    />
+  );
 }
 
 const styles = StyleSheet.create({
   logo: {
-    fontFamily: 'Pretendard-Variable',
-    fontWeight: 'bold',
-  } as TextStyle,
+  } as ImageStyle,
 });
