@@ -7,7 +7,6 @@ import { useResponsiveSize } from '@/utils/ResponsiveSize';
 
 import { BASE_URL } from '@/utils/apiClients';
 import axios from 'axios';
-import { Asset } from 'expo-asset';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import mime from 'mime';
@@ -48,18 +47,6 @@ export default function ProfileChooseScreen() {
     });
     if (!res.ok) throw new Error(`S3 업로드 실패: ${res.status}`);
     D('S3 upload ok');
-  };
-
-  // ✅ 로컬 기본 이미지 업로드 처리(건너뛰기 시 사용)
-  const uploadDefaultImage = async () => {
-    const asset = Asset.fromModule(require('@/assets/images/react-logo.png'));
-    await asset.downloadAsync();
-    const localUri = asset.localUri || asset.uri;
-    const contentType = getCT(localUri);
-    const { uploadUrl, accessUrl } = await getPresignedUrl(contentType);
-    await uploadToS3(uploadUrl, localUri, contentType);
-    setProfileImageUrl(accessUrl);
-    D('default image uploaded ->', accessUrl);
   };
 
   // ✅ 갤러리/카메라로 이미지 선택 후 업로드
@@ -119,7 +106,6 @@ export default function ProfileChooseScreen() {
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
@@ -144,10 +130,10 @@ export default function ProfileChooseScreen() {
     try {
       setLoading(true);
 
-      // 커스텀 이미지를 안 골랐다면 기본 이미지 업로드해서 accessUrl 저장
+      // 커스텀 이미지를 안 골랐다면 기본 이미지 업로드 없이 빈(placeholder) 상태로 진행
       const currentUrl = useUserSignupStore.getState().profileImageUrl;
-      if (!hasCustomImage && !currentUrl) {
-        await uploadDefaultImage();
+      if (!hasCustomImage && currentUrl) {
+        // 혹시 이전 단계에서 저장된 URL이 있다면 유지
       }
 
       router.push('/signup/categorychoose');
@@ -158,6 +144,12 @@ export default function ProfileChooseScreen() {
       setLoading(false);
     }
   };
+
+  // -------- UI --------
+  const AVATAR_SIZE = scaleWidth(120);
+  const AVATAR_RADIUS = AVATAR_SIZE / 2;
+  const BORDER_COLOR = '#4E3F3F';     // 갈색 계열
+  const BG_COLOR = '#FFFFFF';
 
   return (
     <ScreenContainer>
@@ -170,16 +162,34 @@ export default function ProfileChooseScreen() {
           />
 
           <View style={{ marginTop: scaleHeight(32), marginBottom: scaleHeight(20) }}>
-            <Image
-              source={ imageUri ? { uri: imageUri } : require('@/assets/images/react-logo.png') }
-              style={{
-                width: scaleWidth(120),
-                height: scaleWidth(120),
-                borderRadius: scaleWidth(60),
-                resizeMode: 'cover',
-                backgroundColor: '#eee',
-              }}
-            />
+            {imageUri ? (
+              <Image
+                source={{ uri: imageUri }}
+                style={{
+                  width: AVATAR_SIZE,
+                  height: AVATAR_SIZE,
+                  borderRadius: AVATAR_RADIUS,
+                  resizeMode: 'cover',
+                  backgroundColor: '#eee',
+                }}
+                accessible
+                accessibilityLabel="선택된 프로필 사진"
+              />
+            ) : (
+              // ▶ 기본: 갈색 테두리의 흰 배경 원형
+              <View
+                style={{
+                  width: AVATAR_SIZE,
+                  height: AVATAR_SIZE,
+                  borderRadius: AVATAR_RADIUS,
+                  backgroundColor: BG_COLOR,
+                  borderWidth: Math.max(1, AVATAR_SIZE * 0.012), // 사이즈에 비례하여 선 두께
+                  borderColor: BORDER_COLOR,
+                }}
+                accessible
+                accessibilityLabel="기본 프로필 자리 표시자"
+              />
+            )}
           </View>
 
           <View style={{ marginTop: scaleHeight(50), width: '100%' }}>

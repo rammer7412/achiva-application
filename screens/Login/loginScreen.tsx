@@ -179,7 +179,7 @@ export default function LoginScreen() {
               </Text>
 
               <TouchableOpacity
-                onPress={() => router.push('/')} // TODO: 실제 라우트로 교체
+                onPress={() => router.push('/findpw/findpwinputemail')}
                 accessibilityRole="button"
                 hitSlop={{
                   top: scaleHeight(6),

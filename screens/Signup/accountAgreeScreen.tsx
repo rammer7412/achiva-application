@@ -204,7 +204,6 @@ export default function AccountAgreeScreen() {
           />
         </ScrollView>
 
-        {/* 하단 고정 버튼 */}
         <View
           style={{
             position: 'absolute',

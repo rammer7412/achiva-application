@@ -16,7 +16,7 @@ export default function HomeScreen() {
           },
         ]}
       >
-        <Text>미구현 영역</Text>
+        <Text>개발 예정 구역</Text>
       </View>
     </ScreenContainer>
   );

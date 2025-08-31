@@ -16,7 +16,7 @@ export default function HomeScreen() {
           },
         ]}
       >
-        <Text>미구현 영역</Text>
+        <Text>개발 예정 구역</Text>
       </View>
     </ScreenContainer>
   );
@@ -25,6 +25,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F2', // 밝은 회색 배경
+    backgroundColor: '#F2F2F2',
   },
 });
