@@ -89,7 +89,6 @@ export async function getCheeringFromArticles(
   );
 
   if (!res?.data?.data) throw new Error('Invalid response');
-  console.log(res.data.data);
   return res.data.data;
 }
 

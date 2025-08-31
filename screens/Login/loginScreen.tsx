@@ -2,6 +2,7 @@ import { login } from '@/api/auth';
 import { getMe } from '@/api/users';
 import ConfirmButton from '@/components/buttons/ConfirmButton';
 import { ScreenContainer } from '@/components/containers/ScreenContainer';
+import TitleWithBack from '@/components/header/TitleWithBack';
 import PasswordInput from '@/components/inputbox/PasswordInput';
 import SimpleInput from '@/components/inputbox/SimpleInput';
 import ACHIVALogo from '@/components/logo/ACHIVA-logo';
@@ -101,77 +102,110 @@ export default function LoginScreen() {
   
   return (
     <ScreenContainer>
-      <View
-        style={{
-          flex: 1,
-          paddingHorizontal: scaleWidth(24),
-          backgroundColor: '#fff',
-        }}
-      >
-        
-
+      <View style={{ flex: 1, backgroundColor: '#fff', paddingHorizontal: scaleWidth(24) }}>
+        <TitleWithBack title='로그인'/>
         <View
           style={{
-            marginVertical: scaleHeight(64),
-            alignItems: 'center',
+            flex: 1,
+            paddingHorizontal: scaleWidth(24),
+            backgroundColor: '#fff',
           }}
         >
-          <ACHIVALogo color="#412A2A" />
-        </View>
-
-        <View
-          style={{
-            gap: scaleHeight(12),
-            marginBottom: scaleHeight(16),
-          }}
-        >
-          <SimpleInput
-            placeholder="이메일 입력"
-            value={email}
-            onChangeText={onChangeEmail}
-            keyboardType="email-address"
-          />
-          {showInlineError && (
-            <Text style={{ marginTop: scaleHeight(4), color: '#C0392B', fontSize: scaleFont(12) }}>
-              이메일 또는 비밀번호를 확인해주세요.
-            </Text>
-          )}
-
-          <PasswordInput
-            placeholder="비밀번호 입력"
-            value={password}
-            onChangeText={onChangePassword}
-            backgroundColor="#FFFFFF"
-          />
-          {showInlineError && (
-            <Text style={{ marginTop: scaleHeight(4), color: '#C0392B', fontSize: scaleFont(12) }}>
-              이메일 또는 비밀번호를 확인해주세요.
-            </Text>
-          )}
-
-          <ConfirmButton
-            text={loading ? '로그인 중...' : '로그인'}
-            onPress={handleLogin}
-            disabled={isDisabled}
-          />
           
-          {/* //TODO -  */}
-          <TouchableOpacity onPress={() => router.push('/')}> 
-            <Text
+
+          <View
+            style={{
+              marginVertical: scaleHeight(64),
+              alignItems: 'center',
+            }}
+          >
+            <ACHIVALogo/>
+          </View>
+
+          <View
+            style={{
+              gap: scaleHeight(12),
+              marginBottom: scaleHeight(16),
+            }}
+          >
+            <SimpleInput
+              placeholder="이메일 입력"
+              value={email}
+              onChangeText={onChangeEmail}
+              keyboardType="email-address"
+            />
+            {showInlineError && (
+              <Text style={{ marginTop: scaleHeight(4), color: '#C0392B', fontSize: scaleFont(12) }}>
+                이메일 또는 비밀번호를 확인해주세요.
+              </Text>
+            )}
+
+            <PasswordInput
+              placeholder="비밀번호 입력"
+              value={password}
+              onChangeText={onChangePassword}
+              backgroundColor="#FFFFFF"
+            />
+            {showInlineError && (
+              <Text style={{ marginTop: scaleHeight(4), color: '#C0392B', fontSize: scaleFont(12) }}>
+                이메일 또는 비밀번호를 확인해주세요.
+              </Text>
+            )}
+
+            <ConfirmButton
+              text={loading ? '로그인 중...' : '로그인'}
+              onPress={handleLogin}
+              disabled={isDisabled}
+            />
+            
+            <View
               style={{
-                marginTop: scaleHeight(16),
-                textAlign: 'center',
-                color: '#888',
-                fontSize: scaleFont(16),
-                textDecorationLine: 'underline',
+                marginTop: scaleHeight(12),
+                flexDirection: 'row',
+                alignItems: 'center',
+                width: '100%',
+                justifyContent: 'center',
+                alignSelf: 'center',
               }}
             >
-              비밀번호 찾기
-            </Text>
-          </TouchableOpacity>
-        </View>
+              <Text
+                style={{
+                  color: '#8E8E93',
+                  fontSize: scaleFont(16),
+                  marginRight: scaleWidth(8),
+                }}
+              >
+                비밀번호를 잊으셨나요?
+              </Text>
 
+              <TouchableOpacity
+                onPress={() => router.push('/')} // TODO: 실제 라우트로 교체
+                accessibilityRole="button"
+                hitSlop={{
+                  top: scaleHeight(6),
+                  bottom: scaleHeight(6),
+                  left: scaleWidth(6),
+                  right: scaleWidth(6),
+                }}
+              >
+                <Text
+                  style={{
+                    color: '#111111',
+                    fontSize: scaleFont(16),
+                    fontWeight: '700',
+                  }}
+                >
+                  비밀번호 찾기
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+
+          </View>
+
+        </View>
       </View>
+      
     </ScreenContainer>
   );
 }

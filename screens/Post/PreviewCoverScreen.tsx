@@ -34,7 +34,6 @@ export default function PreviewCoverScreen() {
   const [submitting, setSubmitting] = useState(false);
   const [listWidth, setListWidth] = useState(0);
 
-  // blocks -> QA[] (title/text 우선, question/content fallback)
   const qaList: QA[] = useMemo(() => {
     const arr = (blocks ?? []).map((b: any) => ({
       question: String(b?.title ?? b?.question ?? '').trim(),
@@ -43,7 +42,6 @@ export default function PreviewCoverScreen() {
     return arr.filter((q) => q.question.length > 0 || q.content.length > 0);
   }, [blocks]);
 
-  // ArticleCard가 요구하는 Article 형태로 미리보기 데이터 구성
   const previewArticle: Article | null = useMemo(() => {
     if (!category || !photoUri || qaList.length === 0) return null;
     const nowIso = new Date().toISOString();
@@ -57,13 +55,12 @@ export default function PreviewCoverScreen() {
       memberNickName: 'me',
       memberProfileUrl: '',
       backgroundColor: '#f9f9f9',
-      authorCategorySeq: qaList.length, // 임의 값
+      authorCategorySeq: qaList.length,
       createdAt: nowIso,
       updatedAt: nowIso,
     };
   }, [category, photoUri, qaList]);
 
-  // [title, ...questions, image] 페이지 구성 (리터럴 고정으로 타입 오류 방지)
   const pages = useMemo<Page[]>(() => {
     if (!previewArticle) return [];
     return [
@@ -81,7 +78,6 @@ export default function PreviewCoverScreen() {
   const renderCard: ListRenderItem<Page> = ({ item: page, index }) => {
     if (!previewArticle) return null;
     return (
-      // 정사각형: width = viewport, height = width
       <View style={{ width: listWidth || 0, aspectRatio: 1 }}>
         <ArticleCard
           item={previewArticle}

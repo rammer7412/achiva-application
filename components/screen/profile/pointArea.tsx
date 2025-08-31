@@ -37,11 +37,11 @@ export function PointBox({
 
   const palette =
     tone === 'silver'
-      ? { pillBg: '#E5E8EC', pillText: '#6B7380', ripple: 'rgba(107,115,128,0.12)' }
+      ? { pillBg: '#E5E8EC', pillText: '#6B7380', ripple: 'rgba(42, 85, 155, 0.12)' }
       : { pillBg: '#F2EEE3', pillText: '#8A7A5D', ripple: 'rgba(138,122,93,0.12)' };
 
   return (
-    <View style={[styles.cardShadow, { borderRadius: CARD_RADIUS }, style]}>
+    <View style={[styles.cardShadow]}>
       <Pressable
         onPress={onPress}
         disabled={disabled}
@@ -160,8 +160,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.06,
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 6 },
-    elevation: 3,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: 'rgba(0,0,0,0.05)',
   },
   cardInner: {
@@ -176,6 +175,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   col: {
-    flex: 1,
-  },
+  flex: 1,
+  backgroundColor: 'transparent',
+}
 });

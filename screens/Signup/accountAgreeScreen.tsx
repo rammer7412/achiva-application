@@ -200,7 +200,7 @@ export default function AccountAgreeScreen() {
             onToggle={() => setAgreeMarketing(!agreeMarketing)}
             label="마케팅 정보 수신 동의"
             showDetail
-            onPressDetail={() => {}}
+            onPressDetail={() => {Linking.openURL('https://achivamain.notion.site/25df9799dbb8805ab854f0e2caf64369?source=copy_link')}}
           />
         </ScrollView>
 

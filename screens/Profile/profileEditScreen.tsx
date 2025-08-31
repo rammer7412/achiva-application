@@ -74,7 +74,7 @@ export default function ProfileEditScreen() {
   }, []);
 
   const avatarSize = useMemo(() => scaleWidth(120), [scaleWidth]);
-  const plusSize   = useMemo(() => scaleWidth(26),  [scaleWidth]);
+  const plusSize   = useMemo(() => scaleWidth(24),  [scaleWidth]);
 
   const suggestions = useMemo(
     () => ALL_CATEGORIES.filter((c) => !categories.includes(c)),
@@ -219,7 +219,6 @@ export default function ProfileEditScreen() {
           </View>
         ) : (
           <>
-            {/* 아바타 */}
             <View style={{ alignItems: 'center', marginTop: scaleHeight(24) }}>
               <View
                 style={{
@@ -260,18 +259,17 @@ export default function ProfileEditScreen() {
                 activeOpacity={0.85}
                 style={{
                   position: 'absolute',
-                  right: (scaleWidth(430) - avatarSize) / 2 - plusSize * 0.15,
-                  bottom: -plusSize * 0.15,
-                  width: plusSize, height: plusSize, borderRadius: plusSize / 2,
-                  backgroundColor: '#442727', justifyContent: 'center', alignItems: 'center',
-                  borderWidth: 2, borderColor: '#fff',
+                  right: (scaleWidth(430) - avatarSize*0.95) / 2 - plusSize * 0.0001,
+                  bottom: plusSize * scaleWidth(0.2),
+                  width: plusSize, height: plusSize, borderRadius: scaleWidth(4),
+                  backgroundColor: '#808080', justifyContent: 'center', alignItems: 'center',
+                  borderWidth: scaleWidth(4), borderColor: '#fff',
                 }}
               >
                 <Ionicons name="add" size={scaleFont(16)} color="#fff" />
               </TouchableOpacity>
             </View>
-
-            {/* 닉네임 */}
+            
             <View style={{ marginTop: scaleHeight(28), paddingHorizontal: scaleWidth(24) }}>
               <Text style={{ fontSize: scaleFont(14), fontWeight: '600', color: '#2B2B2B' }}>닉네임</Text>
               <View style={{ marginTop: scaleHeight(10) }}>

@@ -1,6 +1,6 @@
 import SignupButton from '@/components/buttons/SignupButton';
 import { ScreenContainer } from '@/components/containers/ScreenContainer';
-import ACHIVALogo from '@/components/logo/ACHIVA-logo';
+import { ACHIVALogoWhite } from '@/components/logo/ACHIVA-logo';
 import SubtitleText from '@/components/text/SubtitleText';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import { useRouter } from 'expo-router';
@@ -35,8 +35,11 @@ export default function LoginChooseScreen() {
             marginBottom: scaleHeight(240),
           }}
         >
-          <ACHIVALogo />
+          <View style={{gap:scaleHeight(8)}}>
+            <ACHIVALogoWhite />
           <SubtitleText text={'성취를 나누고 응원하는\n새로운 공간'} />
+          </View>
+          
         </View>
 
         <View style={{ gap: scaleHeight(1), marginBottom: scaleHeight(10) }}>

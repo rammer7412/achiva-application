@@ -16,41 +16,6 @@ export default function RootLayout() {
     'Pretendard-ExtraBold': require('@/assets/fonts/Pretendard-ExtraBold.otf'),
   });
 
-
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       const { accessToken } = await loadTokens();
-  //       if (accessToken) {
-  //         (authApi.defaults.headers as any).common = (authApi.defaults.headers as any).common || {};
-  //         authApi.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-  //         try {
-  //           const me = await authApi.get('/api/members/me');
-  //           const d = (me?.data?.data ?? {}) as any;
-  //           const user: User = {
-  //             id: Number(d?.id) || 0,
-  //             email: String(d?.email || ''),
-  //             nickName: String(d?.nickName || ''),
-  //             profileImageUrl: d?.profileImageUrl || undefined,
-  //           };
-  //           useAuthStore.getState().setAuth(accessToken, user, null);
-  //           if (__DEV__) console.log('🟢 session restored via /me');
-  //         } catch (e) {
-  //           await clearTokens();
-  //           useAuthStore.getState().clearAuth();
-  //           try { if ((authApi.defaults.headers as any)?.common) delete (authApi.defaults.headers as any).common.Authorization; } catch {}
-  //           if (__DEV__) console.log('❌ /me failed. cleared local session.');
-  //         }
-  //       } else {
-  //         useAuthStore.getState().clearAuth();
-  //         try { if ((authApi.defaults.headers as any)?.common) delete (authApi.defaults.headers as any).common.Authorization; } catch {}
-  //       }
-  //     } finally {
-  //       setHydrated(true);
-  //     }
-  //   })();
-  // }, []);
-
   useEffect(() => {
     if ((fontsLoaded || fontsError)) {
       SplashScreen.hideAsync().catch(() => {});

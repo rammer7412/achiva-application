@@ -22,11 +22,9 @@ type Props = {
 };
 
 export function ProfileHeader({isSelf=true} : Props) {
-  const { scaleWidth } = useResponsiveSize();
+  const {scaleHeight, scaleWidth } = useResponsiveSize();
   return (
-    <PaddingContainer>  
-        {isSelf ? <View style={{marginTop: scaleWidth(10), width: '100%', flexDirection: 'row', justifyContent: 'flex-end' }}><GearSixIcon focused={false} /></View> : <BackHeader />}
-    </PaddingContainer>
+    <View>{isSelf ? <View style={{marginTop: scaleHeight(16), marginRight: scaleWidth(8), width: '99%', flexDirection: 'row', justifyContent: 'flex-end' }}><GearSixIcon focused={false} /></View> : <BackHeader />}</View>
   );
 }
 
