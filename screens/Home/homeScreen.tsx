@@ -30,7 +30,7 @@ function HomeHeader({ onPressLogo }: HeaderProps) {
       <View style={{ gap: scaleHeight(15), marginTop: scaleHeight(42) }}>
 
         <TouchableOpacity activeOpacity={0.7} onPress={onPressLogo}>
-          <ACHIVALogo color="#412A2A" />
+          <ACHIVALogo/>
         </TouchableOpacity>
 
         <ArticleWriteButton

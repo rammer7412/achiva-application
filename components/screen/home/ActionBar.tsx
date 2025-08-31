@@ -82,18 +82,20 @@ export default function ActionBar({
         container: {
           flexDirection: 'row',
           alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: scaleWidth(4),
+          justifyContent: 'space-between', // 균등 분배
         },
         btnBase: {
+          flex: 1, // 버튼이 영역을 균등 차지
+          marginHorizontal: scaleWidth(2), // 버튼 사이 여백
           paddingVertical: scaleHeight(8),
-          paddingHorizontal: scaleWidth(10),
           borderRadius: 36,
           borderWidth: scaleWidth(1.2),
+          alignItems: 'center',  // 텍스트+아이콘 가운데
+          justifyContent: 'center',
         },
         btnOn: { backgroundColor: '#412A2A', borderColor: '#412A2A' },
         btnOff: { backgroundColor: '#FFFFFF', borderColor: '#412A2A' },
-        contentRow: { flexDirection: 'row', alignItems: 'center' },
+        contentRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
         textOn: {
           color: '#FFFFFF',
           fontSize: scaleFont(14),
@@ -104,10 +106,11 @@ export default function ActionBar({
           fontSize: scaleFont(14),
           fontFamily: 'Pretendard-ExtraBold',
         },
-        iconSpacer: { marginLeft: scaleWidth(8) },
+        iconSpacer: { marginLeft: scaleWidth(6) },
       }),
     [scaleWidth, scaleHeight, scaleFont],
   );
+
 
   const hit = {
     top: scaleHeight(6),

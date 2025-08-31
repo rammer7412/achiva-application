@@ -1,5 +1,6 @@
 import { useMyArticles } from '@/api/useMyArticles';
 import { PaddingContainer } from '@/components/containers/ScreenContainer';
+import ArticleFrame from '@/components/screen/home/ArticleFrame'; // ← 경로 확인
 import type { Article, SortOption } from '@/types/ApiTypes';
 import { useResponsiveSize } from '@/utils/ResponsiveSize';
 import React, {
@@ -12,12 +13,14 @@ import React, {
 import {
   ActivityIndicator,
   Image,
+  Modal,
   NativeScrollEvent,
   NativeSyntheticEvent,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  TouchableWithoutFeedback,
+  View
 } from 'react-native';
 import ArticleHeader from './ArticleHeader';
 
@@ -51,6 +54,24 @@ const ArticleArea = forwardRef<ArticleAreaHandle, Props>(function ArticleArea(
     refresh,
   } = useMyArticles(sort, memberId);
 
+  // 상세 모달 상태
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [selected, setSelected] = useState<Article | null>(null);
+
+  const openDetail = (item: Article) => {
+    if (onPressItem) {
+      onPressItem(item);
+      return;
+    }
+    setSelected(item);
+    setDetailOpen(true);
+  };
+
+  const closeDetail = () => {
+    setDetailOpen(false);
+    setTimeout(() => setSelected(null), 150);
+  };
+
   const dateLabel = (iso?: string) =>
     !iso ? '' : iso.slice(0, 10).replace(/-/g, '.');
 
@@ -65,7 +86,6 @@ const ArticleArea = forwardRef<ArticleAreaHandle, Props>(function ArticleArea(
       onParentScroll: (e) => {
         if (isCloseToBottom(e) && !loadingMore && !isLast) loadMore();
       },
-
       refresh: async () => {
         await refresh();
       },
@@ -156,7 +176,7 @@ const ArticleArea = forwardRef<ArticleAreaHandle, Props>(function ArticleArea(
           <TouchableOpacity
             key={item.id}
             activeOpacity={0.9}
-            onPress={() => onPressItem?.(item)}
+            onPress={() => openDetail(item)}
             style={{
               width: '33.3333%',
               paddingHorizontal: gap / 2,
@@ -258,6 +278,33 @@ const ArticleArea = forwardRef<ArticleAreaHandle, Props>(function ArticleArea(
           style={{ marginTop: scaleHeight(12), marginBottom: scaleHeight(8) }}
         />
       )}
+
+      {/* 센터 모달 */}
+      <Modal
+        visible={detailOpen && !!selected}
+        transparent
+        animationType="fade"
+        onRequestClose={closeDetail}
+      >
+        {/* 배경 딤: 전체 덮음 */}
+        <TouchableWithoutFeedback onPress={closeDetail}>
+          <View style={styles.dim} />
+        </TouchableWithoutFeedback>
+
+        {/* 중앙 카드: 가로/세로 모두 중앙 정렬 */}
+        <View style={styles.centerWrap} pointerEvents="box-none">
+          <View style={styles.centerCard} pointerEvents="box-none">
+            {selected && (
+              <ArticleFrame
+                item={selected}
+                onPressMenu={() => {
+                  // 메뉴 액션 필요 시
+                }}
+              />
+            )}
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 });
@@ -293,6 +340,30 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontFamily: 'Pretendard-Medium',
     opacity: 0.95,
+  },
+
+  /* ── 모달 스타일 ─────────────────────────── */
+  dim: {
+    ...StyleSheet.absoluteFillObject as any,
+    backgroundColor: 'rgba(0,0,0,0.45)',
+  },
+  centerWrap: {
+    ...StyleSheet.absoluteFillObject as any,
+    justifyContent: 'center',   // 세로 가운데
+    alignItems: 'center',       // 가로 가운데
+  },
+  centerCard: {
+    maxHeight: '88%',
+    width: '92%',               // 좌우 여백
+    backgroundColor: '#fff',
+    borderRadius: 18,
+    overflow: 'hidden',         // ArticleFrame이 가장자리 넘어가지 않도록
+    // 그림자
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 14,
   },
 });
 

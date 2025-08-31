@@ -236,7 +236,7 @@ export default function ArticleFrame({ item, onPressMenu }: Props) {
         </Animated.View>
       </View>
 
-      <View style={{ marginTop: scaleHeight(10) }}>
+      <View style={{ marginVertical: scaleHeight(10)}}>
         <ActionBar articleId={item.id} />
       </View>
     </View>
