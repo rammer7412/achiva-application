@@ -17,5 +17,6 @@ export async function login(
     body,
     headers,
   );
+  console.log(res);
   return res;
 }

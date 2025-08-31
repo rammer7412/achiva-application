@@ -1,4 +1,5 @@
 import type { ApiBaseResponse, CheeringCategoryStat, CreateCheeringPayload } from '@/types/ApiTypes';
+import { ArticlesParams, PageResponse } from '@/types/ApiTypes';
 import type { Cheering } from '@/types/Response';
 import { api } from '@/utils/apiClients';
 
@@ -69,3 +70,26 @@ export async function deleteCheering(
     throw new Error(msg ? `HTTP_${res.status}: ${msg}` : `HTTP_${res.status}`);
   }
 }
+
+export async function getCheeringFromArticles(
+  articleId: number,
+  params: ArticlesParams = {},
+  signal?: AbortSignal
+): Promise<PageResponse<Cheering>> {
+  const res = await api.get<ApiBaseResponse<PageResponse<Cheering>>>(
+    `/api/articles/${articleId}/cheerings`,
+    {
+      params: {
+        page: params.page ?? 0,
+        size: params.size ?? 6,
+        sort: params.sort ?? 'createdAt,DESC',
+      },
+      signal,
+    }
+  );
+
+  if (!res?.data?.data) throw new Error('Invalid response');
+  console.log(res.data.data);
+  return res.data.data;
+}
+

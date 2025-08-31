@@ -16,7 +16,8 @@ import FlameIcon from '@/components/icons/FlameIcon';
 import HeartIcon from '@/components/icons/HeartIcon';
 import ThumbIcon from '@/components/icons/ThumbIcon';
 
-import { createCheering, deleteCheering } from '@/api/cheering';
+import { createCheering, deleteCheering, getCheeringFromArticles } from '@/api/cheering';
+import { useAuthStore } from '@/stores/useAuthStore';
 import type { CategoryKeyKr, CreateCheeringPayload } from '@/types/ApiTypes';
 import type { Cheering } from '@/types/Response';
 
@@ -42,6 +43,18 @@ const ICON_BY_LABEL: Record<
   동기부여: CloverIcon,
 };
 
+function toLabelKr(raw: unknown): CategoryKeyKr | null {
+  const s = String(raw ?? '').trim();
+  if (s === '최고예요' || s === '응원해요' || s === '수고했어요' || s === '동기부여') return s as CategoryKeyKr;
+  const map: Record<string, CategoryKeyKr> = {
+    BEST: '최고예요',
+    CHEER: '응원해요',
+    GOOD_JOB: '수고했어요',
+    MOTIVATION: '동기부여',
+  };
+  return map[s.toUpperCase()] ?? null;
+}
+
 export default function ActionBar({
   actions = ['최고예요', '수고했어요', '응원해요', '동기부여'],
   style,
@@ -54,15 +67,14 @@ export default function ActionBar({
   contentMap,
 }: Props) {
   const { scaleWidth, scaleHeight, scaleFont } = useResponsiveSize();
+  const myId = useAuthStore((s) => s.user?.id ?? null);
 
   const [selectedSet, setSelectedSet] = React.useState<Set<CategoryKeyKr>>(
     () => new Set(initialSelected),
   );
-
   const [pendingSet, setPendingSet] = React.useState<Set<CategoryKeyKr>>(
     () => new Set(),
   );
-
   const [cheeringMap, setCheeringMap] = React.useState<Map<CategoryKeyKr, Cheering>>(
     () => {
       const m = new Map<CategoryKeyKr, Cheering>();
@@ -76,21 +88,59 @@ export default function ActionBar({
     },
   );
 
+  /** 서버에서 '내가 보낸' 응원만 골라 현재 버튼 상태 동기화 */
+  const syncMyCheerings = React.useCallback(async () => {
+    if (myId == null) return;
+    try {
+      const page = await getCheeringFromArticles(articleId, {
+        page: 0,
+        size: 100,
+        sort: 'createdAt,DESC',
+      });
+
+      // ➜ senderId가 내 id인 항목만 추림
+      const mine = page.content.filter((c: any) => (c as any).senderId === myId);
+
+      const nextSelected = new Set<CategoryKeyKr>();
+      const nextMap = new Map<CategoryKeyKr, Cheering>();
+
+      // createdAt DESC로 온다고 가정하고, 라벨별 첫 항목만 채택
+      for (const c of mine) {
+        const label = toLabelKr((c as any).cheeringCategory);
+        if (!label) continue;
+        if (!nextSelected.has(label)) {
+          nextSelected.add(label);
+          nextMap.set(label, c as Cheering);
+        }
+      }
+
+      setSelectedSet(nextSelected);
+      setCheeringMap(nextMap);
+    } catch (e) {
+      console.log('[ActionBar] syncMyCheerings error:', String((e as any)?.message || e));
+    }
+  }, [articleId, myId]);
+
+  // 마운트/기사 변경/로그인 사용자 변경 시 서버 기준으로 맞춤
+  React.useEffect(() => {
+    syncMyCheerings();
+  }, [syncMyCheerings]);
+
   const styles = React.useMemo(
     () =>
       StyleSheet.create({
         container: {
           flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: 'space-between', // 균등 분배
+          justifyContent: 'space-between',
         },
         btnBase: {
-          flex: 1, // 버튼이 영역을 균등 차지
-          marginHorizontal: scaleWidth(2), // 버튼 사이 여백
+          flex: 1,
+          marginHorizontal: scaleWidth(2),
           paddingVertical: scaleHeight(8),
           borderRadius: 36,
           borderWidth: scaleWidth(1.2),
-          alignItems: 'center',  // 텍스트+아이콘 가운데
+          alignItems: 'center',
           justifyContent: 'center',
         },
         btnOn: { backgroundColor: '#412A2A', borderColor: '#412A2A' },
@@ -111,7 +161,6 @@ export default function ActionBar({
     [scaleWidth, scaleHeight, scaleFont],
   );
 
-
   const hit = {
     top: scaleHeight(6),
     bottom: scaleHeight(6),
@@ -126,6 +175,7 @@ export default function ActionBar({
 
     const isCurrentlyOn = selectedSet.has(label);
 
+    // 낙관적 업데이트
     setSelectedSet((prev) => {
       const next = new Set(prev);
       if (isCurrentlyOn) next.delete(label);
@@ -151,9 +201,7 @@ export default function ActionBar({
         onCheeringCreated?.(cheering, label);
       } else {
         const cheering = cheeringMap.get(label);
-        if (!cheering?.id) {
-          throw new Error('NO_CHEERING_ID');
-        }
+        if (!cheering?.id) throw new Error('NO_CHEERING_ID');
         await deleteCheering(articleId, cheering.id);
         setCheeringMap((prev) => {
           const next = new Map(prev);
@@ -163,6 +211,7 @@ export default function ActionBar({
         onCheeringDeleted?.(label);
       }
     } catch (e: any) {
+      // 실패 → 롤백
       setSelectedSet((prev) => {
         const next = new Set(prev);
         if (isCurrentlyOn) next.add(label);
@@ -173,9 +222,7 @@ export default function ActionBar({
 
       const msg = String(e?.message || '');
       let userMsg = '잠시 후 다시 시도해 주세요.';
-      if (msg.includes('NO_CHEERING_ID')) {
-        userMsg = '취소할 응원 정보를 찾지 못했어요.';
-      }
+      if (msg.includes('NO_CHEERING_ID')) userMsg = '취소할 응원 정보를 찾지 못했어요.';
       console.log('[cheering:toggle:error]', msg);
       Alert.alert('응원 처리 실패', userMsg);
     } finally {
@@ -184,6 +231,8 @@ export default function ActionBar({
         n.delete(label);
         return n;
       });
+      // 서버 상태와 동기화(정합성 보정)
+      syncMyCheerings();
     }
   };
 
