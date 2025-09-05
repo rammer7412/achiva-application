@@ -1,4 +1,3 @@
-// @/screens/Main/PostScreen.tsx
 import ConfirmButton from '@/components/buttons/ConfirmButton';
 import { SmallButton } from '@/components/buttons/SmallButton';
 import { FlexPaddingContainer } from '@/components/containers/ScreenContainer';

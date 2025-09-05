@@ -31,7 +31,7 @@ export default function FinishSignupScreen() {
       <View style={[styles.fillWhite, { paddingHorizontal: sizes.sidePad }]}>
         {/* 가운데 콘텐츠 */}
         <View style={styles.center}>
-          <ACHIVALogo color="#412A2A" />
+          <ACHIVALogo/>
 
           <Text
             style={[

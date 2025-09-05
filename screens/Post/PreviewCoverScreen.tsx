@@ -131,8 +131,6 @@ export default function PreviewCoverScreen() {
     <ScreenContainer>
       <View style={{ flex: 1, backgroundColor: '#fff', paddingHorizontal: scaleWidth(24) }}>
         <TitleWithBack title="표지 미리보기" />
-
-        {/* 카드만 가로 스와이프(옆 카드 미노출, 정사각형) */}
         <View onLayout={onListLayout} style={{ marginTop: scaleHeight(12) }}>
           {previewArticle && pages.length > 0 ? (
             <FlatList<Page>

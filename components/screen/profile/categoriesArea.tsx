@@ -1,4 +1,3 @@
-// components/screen/profile/CategoriesArea.tsx
 import { fetchMemberProfile } from '@/api/member';
 import CategoryChip from '@/components/chips/CategoryChip';
 import { PaddingContainer } from '@/components/containers/ScreenContainer';
